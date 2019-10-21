@@ -18,6 +18,14 @@ kubectl create -f rc-def.yml
 kubectl get rc                                #kubectl get replicationcontroller
 kubectl describe rc
 
+kubectl create -f dp-def.yml
+kubectl get deployments
+kubectl apply -f dp-def.yml
+kubectl set image deploy/myapp-deployment nginx=nginx:1.9.1
+kubeclt rollout status deployment/myapp-deployment
+kubeclt rollout history deployment/myapp-deployment
+kubeclt rollout undo deployment/myapp-deployment
+
 
 #scale
 1. replicas: 6 (3-init)
