@@ -1,3 +1,4 @@
+kubectl run nginx --image=nginx  #create a deployment nginx 
 kubectl get pods
 kubectl get pods -o wide
 kubectl describe pods
