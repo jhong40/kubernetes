@@ -26,6 +26,14 @@ kubeclt rollout status deployment/myapp-deployment
 kubeclt rollout history deployment/myapp-deployment
 kubeclt rollout undo deployment/myapp-deployment
 
+root@kubemaster:~# kubectl create -f dp-def.yml --record 
+deployment.apps/myapp-deployment created
+root@kubemaster:~# kubectl rollout history deployment/myapp-deployment
+deployment.apps/myapp-deployment 
+REVISION  CHANGE-CAUSE
+1         kubectl create --filename=dp-def.yml --record=true
+
+
 
 #scale
 1. replicas: 6 (3-init)
