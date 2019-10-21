@@ -1,0 +1,87 @@
+kubectl get pods
+kubectl get pods -o wide
+kubectl describe pods
+kubectl create -f pod-def.yml
+
+kubectl get pods -o wide
+NAME                     READY   STATUS    RESTARTS   AGE   IP                NODE        NOMINATED NODE   READINESS GATES
+myapp-pod                1/1     Running   0          78s   192.168.205.193   kubenode1   <none>           <none>
+nginx-6db489d4b7-mwz8w   1/1     Running   0          11m   192.168.35.66     kubenode2   <none>           <none>
+
+kubectl create -f rs-def.yml
+kubectl get rs                    #kubectl get replicaset
+kubectl describe rs 
+kubectl delete rs frontend                    #rs or replicaset
+
+kubectl create -f rc-def.yml                  
+kubectl get rc                                #kubectl get replicationcontroller
+kubectl describe rc
+
+
+#scale
+1. replicas: 6 (3-init)
+   kubectl replace -f rs-def.yml
+2. kubectl scale --replicas=6 -f rs-def.yml  #add scale parm and the same yml file
+3. kubectl scale --replicas=6 replicaset myapp-replicaset
+
+
+# cat pod-def.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+    type: front-end
+    
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+
+root@kubemaster:~# cat rs-def.yml
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-rs 
+  labels:
+    app: myapp 
+    type: front-end
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: front-end
+  template:
+    metadata:
+      labels:
+        app: myapp-pod 
+        type: front-end
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+
+root@kubemaster:~# cat rc-def.yml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: myapp-rc 
+  labels:
+    app: myapp 
+    type: front-end 
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: myapp-pod 
+        type: front-end
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+
+
+
+
