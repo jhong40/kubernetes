@@ -99,6 +99,33 @@ spec:
       - name: nginx-container
         image: nginx
 
+root@kubemaster:~# cat dp-def.yml
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: myapp-deployment
+  labels:
+    app: myapp 
+    type: front-end
+spec:
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: myapp 
+
+  template:
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+
+    spec:
+      containers:
+      - name: nginx-container
+        image: nginx
+
+
 
 
 
