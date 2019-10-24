@@ -154,6 +154,13 @@ spec:
         image: nginx
 
 
-
+---------------------------------------------------------------------------------------------
+root@kubemaster:~# kubectl get pods
+NAME                                READY   STATUS             RESTARTS   AGE
+myapp-deployment-544f87f4f-mttjb    1/1     Running            0          4m7s
+myapp-deployment-544f87f4f-r2k2h    1/1     Running            0          4m11s
+myapp-deployment-544f87f4f-tjts5    1/1     Running            0          4m11s
+myapp-deployment-685ddbd974-kccd4   0/1     ImagePullBackOff   0          90s
+myapp-deployment-685ddbd974-nq85k   0/1     ImagePullBackOff   0          90s
 
 
