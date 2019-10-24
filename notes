@@ -7,6 +7,8 @@ Host-only Network
 Adapter 2 for Host-Only network
 
 /etc/fstab #comment out swap or swap -a
+
+
 kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=172.16.110.73
 
 kubeadm join 172.16.110.73:6443 --token f64rrh.pxva1wccuqhjo8gh \
