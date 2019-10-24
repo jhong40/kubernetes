@@ -1,3 +1,28 @@
+/etc/hostname
+kubemaster
+/etc/hosts
+127.0.0.1 kubemaster
+
+Host-only Network
+Adapter 2 for Host-Only network
+
+/etc/fstab #comment out swap or swap -a
+kubeadm init --pod-network-cidr=192.168.0.0/16 --apiserver-advertise-address=172.16.110.73
+
+kubeadm join 172.16.110.73:6443 --token f64rrh.pxva1wccuqhjo8gh \
+    --discovery-token-ca-cert-hash sha256:282c3908b7f102a45233760a0a6937bb0287dc95a5f77417e97393e25b146e8d 
+
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
+
+
+
+master - 172.16.110.73
+node1 - 172.16.110.75
+node2 - 172.16.110.113
+
+
+
 kubectl run nginx --image=nginx  #create a deployment nginx 
 kubectl get pods
 kubectl get pods -o wide
