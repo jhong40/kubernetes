@@ -49,9 +49,10 @@ kubectl create -f dp-def.yml
 kubectl get deployments
 kubectl apply -f dp-def.yml
 kubectl set image deploy/myapp-deployment nginx=nginx:1.9.1
-kubeclt rollout status deployment/myapp-deployment
-kubeclt rollout history deployment/myapp-deployment
-kubeclt rollout undo deployment/myapp-deployment
+kubectl describe deployment
+kubectl rollout status deployment/myapp-deployment
+kubectl rollout history deployment/myapp-deployment
+kubectl rollout undo deployment/myapp-deployment
 
 root@kubemaster:~# kubectl create -f dp-def.yml --record 
 deployment.apps/myapp-deployment created
