@@ -56,6 +56,8 @@ kubectl rollout undo deployment/myapp-deployment
 
 
 kubectl get rs new-rs -o yaml  #creates yml out of the existing rs
+kubectl scale rs new-rs --replicas=5
+
 
 
 root@kubemaster:~# kubectl create -f dp-def.yml --record 
