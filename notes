@@ -54,6 +54,10 @@ kubectl rollout status deployment/myapp-deployment
 kubectl rollout history deployment/myapp-deployment
 kubectl rollout undo deployment/myapp-deployment
 
+
+kubectl get rs new-rs -o yaml  #creates yml out of the existing rs
+
+
 root@kubemaster:~# kubectl create -f dp-def.yml --record 
 deployment.apps/myapp-deployment created
 root@kubemaster:~# kubectl rollout history deployment/myapp-deployment
