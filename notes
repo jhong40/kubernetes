@@ -163,4 +163,21 @@ myapp-deployment-544f87f4f-tjts5    1/1     Running            0          4m11s
 myapp-deployment-685ddbd974-kccd4   0/1     ImagePullBackOff   0          90s
 myapp-deployment-685ddbd974-nq85k   0/1     ImagePullBackOff   0          90s
 
+root@kubemaster:~# kubectl get pods -n kube-system
+NAME                                      READY   STATUS             RESTARTS   AGE
+calico-kube-controllers-55754f75c-qvjf8   1/1     Running            3          3d2h
+calico-node-gbnc2                         1/1     Running            11         3d2h
+calico-node-hstz2                         1/1     Running            11         3d2h
+calico-node-tk442                         1/1     Running            8          3d2h
+coredns-5644d7b6d9-rsvj5                  0/1     CrashLoopBackOff   90         3d2h
+coredns-5644d7b6d9-z5ffn                  0/1     CrashLoopBackOff   90         3d2h
+etcd-kubemaster                           1/1     Running            6          3d2h
+kube-apiserver-kubemaster                 1/1     Running            11         3d2h
+kube-controller-manager-kubemaster        1/1     Running            16         3d2h
+kube-proxy-2bg8x                          1/1     Running            3          3d2h
+kube-proxy-jhlpm                          1/1     Running            12         3d2h
+kube-proxy-nrdjt                          1/1     Running            3          3d2h
+kube-scheduler-kubemaster                 1/1     Running            14         3d2h
+
+# kubectl edit pod myapp-deployment-748f65c8f7-5rbtq
 
