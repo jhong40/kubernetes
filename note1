@@ -1,0 +1,14 @@
+$ kubectl get pv
+
+NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                             STORAGECLASS       REASON   AGE
+pvc-1629268b-e5a8-4775-b81f-80c990f4e2ce   8Gi        RWO            Delete           Bound    default/data-crowd-postgresql-0   do-block-storage            41m
+pvc-18e3d3cf-eca6-4d87-8f48-c0588458bdc2   10Gi       RWO            Delete           Bound    default/crowd-vol-crowd-0         do-block-storage            41m
+
+$ kubectl get pvc
+NAME                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS       AGE
+crowd-vol-crowd-0         Bound    pvc-18e3d3cf-eca6-4d87-8f48-c0588458bdc2   10Gi       RWO            do-block-storage   41m
+data-crowd-postgresql-0   Bound    pvc-1629268b-e5a8-4775-b81f-80c990f4e2ce   8Gi        RWO            do-block-storage   41m
+
+$ kubectl delete pvc crowd-vol-crowd-0 data-crowd-postgresql-0
+persistentvolumeclaim "crowd-vol-crowd-0" deleted
+persistentvolumeclaim "data-crowd-postgresql-0" deleted
