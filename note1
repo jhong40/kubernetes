@@ -12,3 +12,6 @@ data-crowd-postgresql-0   Bound    pvc-1629268b-e5a8-4775-b81f-80c990f4e2ce   8G
 $ kubectl delete pvc crowd-vol-crowd-0 data-crowd-postgresql-0
 persistentvolumeclaim "crowd-vol-crowd-0" deleted
 persistentvolumeclaim "data-crowd-postgresql-0" deleted
+
+helm install crowd crowd-helm-chart --set ingress.tlssecret=mysecret --debug --dry-run  > crowd.txt
+helm delete crowd
