@@ -97,4 +97,10 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx  #add ngi
 helm ls
 helm install my-nginx ingress-nginx/ingress-nginx  #install nginx
 
+### Ngrok exposes local servers behind NATs and firewalls to the public internet over secure tunnels.
+
+https://ngrok.com/product
+
+
+
 
