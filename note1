@@ -90,4 +90,11 @@ docker run -d \
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm install my-release ingress-nginx/ingress-nginx
 
+### stackstorm
+helm dependency update stackstorm-helm-chart  #update the chart dependency
+helm install aaastack stackstorm-helm-chart   #install stackstorm
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx  #add nginx in repo
+helm ls
+helm install my-nginx ingress-nginx/ingress-nginx  #install nginx
+
 
