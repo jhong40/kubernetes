@@ -68,3 +68,22 @@ export NODE_IP=$(kubectl get nodes --namespace postgresql -o jsonpath="{.items[0
 export NODE_PORT=$(kubectl get --namespace postgresql -o jsonpath="{.spec.ports[0].nodePort}" services postgresql)
 PGPASSWORD="$POSTGRES_PASSWORD" psql --host $NODE_IP --port $NODE_PORT -U user1 -d userdb
 
+# docker registry 
+docker run -d \
+  -p 5000:5000 \
+  --restart=always \
+  --name registry \
+  -v /home/guangshengliu/7-22/registry:/var/lib/registry \
+  registry:2
+  
+  docker run -d \
+  --restart=always \
+  --name registry \
+  -v "$(pwd)"/certs:/certs \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
+  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+  -p 443:443 \
+  registry:2
+
+
