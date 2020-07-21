@@ -43,5 +43,28 @@ spec:
         path: /myapp
 
 
+openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout /tmp/www.key -out /tmp/www.crt
 
+ngnix-ingress
+https://kubernetes.github.io/ingress-nginx
+
+(not found)
+https://helm.nginx.com/stable
+
+-- Postgresql
+
+postgresql.postgresql.svc.cluster.local - Read/Write connection
+To get the password for "user1" run:
+
+export POSTGRES_PASSWORD=$(kubectl get secret --namespace postgresql postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
+
+To connect to your database run the following command:
+
+kubectl run postgresql-client --rm --tty -i --restart='Never' --namespace postgresql --image docker.io/postgres:10 --env="PGPASSWORD=$POSTGRES_PASSWORD" --command -- psql --host postgresql -U user1 -d userdb -p 5432
+
+To connect to your database from outside the cluster execute the following commands:
+
+export NODE_IP=$(kubectl get nodes --namespace postgresql -o jsonpath="{.items[0].status.addresses[0].address}")
+export NODE_PORT=$(kubectl get --namespace postgresql -o jsonpath="{.spec.ports[0].nodePort}" services postgresql)
+PGPASSWORD="$POSTGRES_PASSWORD" psql --host $NODE_IP --port $NODE_PORT -U user1 -d userdb
 
