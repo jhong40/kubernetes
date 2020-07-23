@@ -1,4 +1,7 @@
-$ kubectl get pv
+kubectl exec -it stackstorm-st2actionrunner-748d8558dd-7hsn5 -- /bin/bash
+
+
+kubectl get pv
 
 NAME                                       CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                             STORAGECLASS       REASON   AGE
 pvc-1629268b-e5a8-4775-b81f-80c990f4e2ce   8Gi        RWO            Delete           Bound    default/data-crowd-postgresql-0   do-block-storage            41m
