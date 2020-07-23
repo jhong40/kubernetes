@@ -102,7 +102,22 @@ helm install my-nginx ingress-nginx/ingress-nginx  #install nginx
 
 ### Ngrok exposes local servers behind NATs and firewalls to the public internet over secure tunnels.
 
+
 https://ngrok.com/product
+#start web server on port 5000
+
+ngrok http 5000
+Session Status                online                                                                                                   
+Account                       George Blah (Plan: Free)                                                                                 
+Version                       2.3.35                                                                                                   
+Region                        United States (us)                                                                                       
+Web Interface                 http://127.0.0.1:4040                                                                                    
+Forwarding                    http://96482e394a13.ngrok.io -> http://localhost:5000                                                    
+Forwarding                    https://96482e394a13.ngrok.io -> http://localhost:5000  
+
+
+
+
 
 
 
