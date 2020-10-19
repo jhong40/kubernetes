@@ -187,3 +187,12 @@ kube-scheduler-kubemaster                 1/1     Running            14         
 
 # kubectl edit pod myapp-deployment-748f65c8f7-5rbtq
 
+
+### Expose Service #####
+1. Create a service - Exposing Pod
+kubectl expose pod nginx --name nginx-svc --port=80 --target-port=80
+2. Create a service - Expose Deployment
+kubectl expose deployment nginx --name nginx-dep-svc --port=80 --target-port=8000
+3. Create a NodePort Service
+kubectl expose deployment nginx --name nodeport-svc --port=80 --target-port=8000 --type=NodePort
+
