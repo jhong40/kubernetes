@@ -1,6 +1,6 @@
-# 5 App lifecycle management
+## 5 App lifecycle management
 
-## create deployment
+### create deployment
 kubectl create deployment webapp1 --image=nginx:1.16-alpine-perl --dry-run=client -o yaml > webapp1.yml
 
 ## create pod
