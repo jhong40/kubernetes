@@ -1,0 +1,284 @@
+##### App lifecycle management
+
+# create deployment
+kubectl create deployment webapp1 --image=nginx:1.16-alpine-perl --dry-run -o yaml > webapp1.yml
+
+# create pod
+kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml
+
+#rollout
+k apply -f webapp2.yml  #nginx:1.17-alpine-perl
+
+kubectl rollout status deployment webapp1
+deployment "webapp1" successfully rolled out
+
+kubectl get deployment -o wide | grep webapp1
+webapp1   8/10    5            8           27h    nginx        nginx:1.17-alpine                   app=webapp
+
+kubectl rollout undo deploy webapp1
+deployment.apps/webapp1 rolled back
+
+kubectl get deployment -o wide | grep webapp1
+webapp1   10/10   10           10          27h    nginx        nginx:1.16-alpine                   app=webapp
+
+kp -w
+
+kubectl scale --replicas=5 deployment/webapp1
+
+# CronJobs / ConfigMap
+
+#### Installation, configuration, Validation (kubeadm)
+# kubeadmin init, kubeadm join, kubeadm reset
+
+
+kubectl get componentstatus
+NAME                 STATUS    MESSAGE             ERROR
+controller-manager   Healthy   ok                  
+etcd-0               Healthy   {"health":"true"}   
+scheduler            Healthy   ok  
+
+
+kubectl cluster-info
+Kubernetes master is running at https://1a733cd8-97a3-452d-b3e9-8968c5836625.k8s.ondigitalocean.com
+CoreDNS is running at https://1a733cd8-97a3-452d-b3e9-8968c5836625.k8s.ondigitalocean.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+
+kubectl get nodes
+NAME                   STATUS   ROLES    AGE     VERSION
+pool-nyqch4qlz-3p9k6   Ready    <none>   5d11h   v1.18.8
+pool-nyqch4qlz-3pjhg   Ready    <none>   12d     v1.18.8
+
+#### Networking
+$ kubectl expose deployment webapp1 --port=80
+service/webapp1 exposed
+
+$ kubectl get svc | grep webapp1
+webapp1      ClusterIP   10.245.61.106    <none>        80/TCP    25s
+
+$ kubectl get svc -o=wide | grep webapp1
+webapp1      ClusterIP   10.245.61.106    <none>        80/TCP    80s    app=webapp
+
+$ kubectl expose deployment webapp1 --port=80 --dry-run -o yaml
+W1027 22:26:38.363187   23564 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: webapp1
+  name: webapp1
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webapp
+status:
+  loadBalancer: {}
+
+
+#### scheduling
+kubectl label nodes node1 disktype=ssd
+
+kubectl get nodes --show-labels=true
+
+# in deployment, select the above node
+nodeSelector:
+  distype: "ssd"
+  
+# multiple scheduler
+# manually schedule pod without a scheduler
+
+kubectl get events -w # watch event as it happens
+
+#### Security
+
+
+#### Cluster Maintenence
+# Upgrade
+backup
+upgrade kubeadm
+drain the control plane node
+kubeadm upgrade plan
+kubeadm upgrade apply v1.18.x
+kubectl uncordon
+upgrade kubectl
+systemctl restart kubelet
+upgrade worker nodes
+
+###########################################################################  Backup - Restore
+
+kubectl get all --all-namespaces -o yaml > all-deployment-services.yaml
+(velero - former called ark)
+
+1. etcd volume snapshot (data-dir folder backup): when launched, there is --data-dir parm which define the etcd data file, backup that file.
+2. etcd built-in snapshot
+
+# backup to a db file
+ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+     --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+     snapshot save /opt/snapshot-pre-boot.db
+
+# restore to a folder /var/lib/etcd-from-backup 
+ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+     --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+     --data-dir /var/lib/etcd-from-backup \
+     snapshot restore /opt/snapshot-pre-boot.db
+
+# config etc to use that folder
+# if etcd is a process:
+    Command:
+      etcd
+      --advertise-client-urls=ttps://172.17.0.21:2379
+      --cert-file=/etc/kubernetes/pki/etcd/server.crt
+      --client-cert-auth=true
+      --data-dir=/var/lib/etcd   ******=> etcd-from-backup
+      --initial-advertise-peer-urls=https://172.17.0.21:2380
+      --initial-cluster=controlplane=https://172.17.0.21:2380
+      --key-file=/etc/kubernetes/pki/etcd/server.key
+      --listen-client-urls=https://127.0.0.1:2379,https://172.17.0.21:2379
+      --listen-metrics-urls=http://127.0.0.1:2381
+      --listen-peer-urls=https://172.17.0.21:2380
+      --name=controlplane
+      --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+      --peer-client-cert-auth=true
+      --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
+      --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+      --snapshot-count=10000
+      --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+# if etcd is a pod: /etc/kubernetes/manifests/etcd.yaml,  path: /var/lib/etcd-from-backup
+  volumes:
+  - hostPath:
+      path: /var/lib/etcd-from-backup
+      type: DirectoryOrCreate
+    name: etcd-data
+  - hostPath:
+      path: /etc/kubernetes/pki/etcd
+      type: DirectoryOrCreate
+    name: etcd-certs
+  
+# etcd key/value   
+ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/ca.crt --cert=/etc/etcd/etcd.crt --key=/etc/etcd/etcd.key put course "Today is great"
+ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/ca.crt --cert=/etc/etcd/etcd.crt --key=/etc/etcd/etcd.key get course
+
+
+####################################################  Monitor and Logging
+## Monitor cluster
+# Node problem detector
+# Metrics-server
+kubectl top nodes
+kubectl top pods
+
+## monitor app
+Liveness probe  
+Readiness probe
+
+## Cluster component log
+# node /var/log or /var/log/containers
+kube-apiserver.log kube-scheduler.log, kube-controller-manager.log
+kubelet.log kube-proxy.log
+
+## app logs
+kubectl logs pod1
+kubectl describe pod1
+
+
+
+### Storage
+# Static Provisioning
+# create storage, pv, pvc, pod (using pvc)
+--pod
+volumeMounts:
+- mountPath: /log
+  name: log-volume
+volumes:
+- name: log-volum
+  hostpath:
+    path: "/var/log/webapp"
+
+
+--pv
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-log
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/pv/log"
+
+--pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: claim-log-1
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 30Mi
+--pod
+volumeMounts:
+- mountPath: /log
+  name: log-volume
+volumes:
+- name: log-volum
+  persistentVolumeClaim:
+    claimName: claim-log-1
+
+# Dynamic Provsioning
+Storage class (dynamically create storage), pvc, pod (using pvc)
+
+
+
+### Json Path
+kubectl get pods -o=jsonpath='{ .items[1].spec.containers[0].image }'  
+nginx
+
+kubectl get nodes -o=jsonpath='{.items[*].metadata.name}'    
+master node1 node2
+
+kubectl get nodes -o=jsonpath='{.items[*].status.nodeInfo.architecture}' 
+amd64 amd64 amd64 
+
+kubectl get nodes -o=jsonpath='{.items[*].status.capacity.cpu}'
+12 12 12
+
+kubectl get nodes -o=jsonpath='{.items[*].metadata.name} {.items[*].status.capacity.cpu}'
+master node1 node2 12 12 12
+
+
+kubectl get nodes -o=jsonpath='{.items[*].metadata.name} {"\n"} {.items[*].status.capacity.cpu}'  
+master node1 node2 
+12 12 12
+
+kubectl get nodes -o=jsonpath='{range .items[*]} {.metadata.name} {"\t"} {.status.capacity.cpu}{"\n"}{end}'
+master 12
+node1  12
+node2  12
+
+
+kubectl get nodes -o=custom-columns='NODE:.metadata.name, CPU:.status.capacity.cpu'
+Node   CPU
+master 12
+node1  12
+node2  12
+
+
+kubectl get nodes --sort-by=.metadata.name
+
+kubectl get nodes --sort-by=.status.capacity.cpu
+
+k -n postgresql get secret postgresql -o=jsonpath='{.data.postgresql-password}' | base64 --decode | more
+
+
+
