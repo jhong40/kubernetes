@@ -112,9 +112,10 @@ upgrade kubectl
 systemctl restart kubelet
 upgrade worker nodes
 
-########################################################################### 6  Cluster Maintanence
+### 6  Cluster Maintanence
 
-######### Upgrade: 1.16->1.17->1.18 (no 1.16->1.18 directly)
+#### Upgrade: 1.16->1.17->1.18 (no 1.16->1.18 directly)
+```
 kubectl drain node-1    # evict pods, and mark unschedule
 kubectl cordon node-1   # mark unschedule
 kubectl uncordon node-1 # makr schedule
@@ -137,17 +138,18 @@ kubectl drain node1
 kubectl uncordon node1
 kubectl drain node2
 kubectl uncordon node2
-
-######## Backup - Restore
-
+```
+#### Backup - Restore
+```
 kubectl get all --all-namespaces -o yaml > all-deployment-services.yaml
 (velero - former called ark)
+```
 
 1. etcd volume snapshot (data-dir folder backup): when launched, there is --data-dir parm which define the etcd data file, backup that file.
 2. etcd built-in snapshot
 
-# backup to a db file
-ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+#### backup to a db file
+ETCDCTL_API=3 etcdctl --endpoints=https:/127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt \
      --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
      snapshot save /opt/snapshot-pre-boot.db
 
