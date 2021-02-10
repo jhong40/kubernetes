@@ -1,7 +1,7 @@
-##### App lifecycle management
+####################################################### 5 App lifecycle management
 
 # create deployment
-kubectl create deployment webapp1 --image=nginx:1.16-alpine-perl --dry-run -o yaml > webapp1.yml
+kubectl create deployment webapp1 --image=nginx:1.16-alpine-perl --dry-run=client -o yaml > webapp1.yml
 
 # create pod
 kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml
@@ -109,7 +109,33 @@ upgrade kubectl
 systemctl restart kubelet
 upgrade worker nodes
 
-###########################################################################  Backup - Restore
+########################################################################### 6  Cluster Maintanence
+
+######### Upgrade: 1.16->1.17->1.18 (no 1.16->1.18 directly)
+kubectl drain node-1    # evict pods, and mark unschedule
+kubectl cordon node-1   # mark unschedule
+kubectl uncordon node-1 # makr schedule
+
+## master1 node
+apt update; apt upgrade -y kubeadmin=1.19.0-00
+kubectl upgrade plan         
+kubectl upgrade apply 1.19.0
+apt upgrade -y kubelet=1.19.0-00
+systemctl restart kubelet
+
+## other nodes (master2 and worker node)
+apt update; apt upgrade -y kubeadmin=1.19.0-00
+kubectl upgrade node
+apt upgrade -y kubelet=1.19.0-00
+systemctl restart kubelet
+
+## one after another
+kubectl drain node1
+kubectl uncordon node1
+kubectl drain node2
+kubectl uncordon node2
+
+######## Backup - Restore
 
 kubectl get all --all-namespaces -o yaml > all-deployment-services.yaml
 (velero - former called ark)
