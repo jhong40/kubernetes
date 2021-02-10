@@ -6,6 +6,7 @@ kubectl create deployment webapp1 --image=nginx:1.16-alpine-perl --dry-run=clien
 ```
 
 ## create pod
+```
 kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml
 
 #rollout
@@ -26,8 +27,8 @@ webapp1   10/10   10           10          27h    nginx        nginx:1.16-alpine
 kp -w
 
 kubectl scale --replicas=5 deployment/webapp1
-
-# CronJobs / ConfigMap
+```
+### CronJobs / ConfigMap
 
 #### Installation, configuration, Validation (kubeadm)
 # kubeadmin init, kubeadm join, kubeadm reset
