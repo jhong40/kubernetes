@@ -94,8 +94,22 @@ nodeSelector:
 
 kubectl get events -w # watch event as it happens
 
-#### Security
+########################################################################## 7 Security
+user/pass, user/token, cert, ldap(3rd party)
+# user-details.csv
+   password123,user1,u0001,group1
+   password123,user2,u0002,group2
+  --basic-auth-file=user-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
+  curl -v -k https://apiserverurl/api/v1/pods -u "user1:password123"
+# user-token-details.csv
+   dkkkdfllflf1dkd,user1,u0001,group1
+   2kkkdfll2lf1dkd,user2,u0002,group2
+  --token-auth-file=user-token-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
+    curl -v -k https://apiserverurl/api/v1/pods --header "Authorization: Bearer dkkkdfllflf1d"
+    
 
+
+########################################################################### 6  Cluster Maintanence
 
 #### Cluster Maintenence
 # Upgrade
@@ -108,8 +122,6 @@ kubectl uncordon
 upgrade kubectl
 systemctl restart kubelet
 upgrade worker nodes
-
-########################################################################### 6  Cluster Maintanence
 
 ######### Upgrade: 1.16->1.17->1.18 (no 1.16->1.18 directly)
 kubectl drain node-1    # evict pods, and mark unschedule
