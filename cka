@@ -107,8 +107,21 @@ user/pass, user/token, cert, ldap(3rd party)
   --token-auth-file=user-token-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
     curl -v -k https://apiserverurl/api/v1/pods --header "Authorization: Bearer dkkkdfllflf1d"
     
-
-
+# TLS
+  ssh-keygen => id_rsa, id_rsa.pub
+  user1 => host1  (~/.ssh/authorized_keys: ssh-rsa id_rsa.pub) 
+  ssh -i id_rsa user1@host1
+  
+  PKI (CA, Cert/Key, server, browser)
+  public key: .crt .pem
+  private key: .key, -key.pem
+  
+  
+  
+  
+  
+  
+  
 ########################################################################### 6  Cluster Maintanence
 
 #### Cluster Maintenence
