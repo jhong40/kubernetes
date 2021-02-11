@@ -147,12 +147,83 @@ openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt 
 # view crt
 openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout
 
+# new user jane
+openssl genrsa -out jane.key 2048
+openssl req -new -key jane.key -subj "/CN=jane" -out jane.csr # -> jane.csr
+cat jane.csr | base64  # -> {result}
 
-  
+  apiVersion: certificates.k8s.io/v1beta1
+  kind: CertificateSigningRequest
+    metadata:
+  name: jane
+  spec:
+  groups:
+  - system:authenticated
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+  request:
+    {result}
+ 
+ kubectl get csr
+  NAME AGE REQUESTOR CONDITION
+  jane 10m admin@example.com Pending
+ kubectl certificate approve jane
+  jane approved!
+ kubectl get csr jane -o yaml # => retrive the certificate, then decode with base64 --decode
+ 
+ # Kubeconf
+ 
+ curl https://my-kube-playground:6443/api/v1/pods \
+--key admin.key
+--cert admin.crt
+--cacert ca.crt
+{
+"kind": "PodList", 
+"apiVersion": "v1",
+"metadata": {
+"selfLink": "/api/v1/pods",
+},
+"items": []
+}
+
+kubectl get pods
+--server myapiserver:6443
+--client-key admin.key
+--client-certificate admin.crt
+--certificate-authority ca.crt
+
+kubectl get pods --kubeconfig config
+kubectl get pods # ~/.kube/config
+
+kubectl config view
+  apiVersion: v1
+  kind: Config
+  current-context: kubernetes-admin@kubernetes
+  clusters:
+  - cluster:
+  certificate-authority-data: REDACTED
+  server: https://172.17.0.5:6443
+  name: kubernetes
+  contexts:
+  - context:
+  cluster: kubernetes
+  user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+  users:
+  - name: kubernetes-admin
+  user:
+  client-certificate-data: REDACTED
+  client-key-data: REDACTED
+
+# API Group
+
   
 ########################################################################### 6  Cluster Maintanence
 
 #### Cluster Maintenence
+
 # Upgrade
 backup
 upgrade kubeadm
