@@ -115,11 +115,35 @@ user/pass, user/token, cert, ldap(3rd party)
   PKI (CA, Cert/Key, server, browser)
   public key: .crt .pem
   private key: .key, -key.pem
-  
-  
-  
-  
-  
+   
+openssl genrsa -out ca.key 2048  # generate key => ca.key
+openssl req -new -key ca.key -subj "/CN=KUBERNETES-CA" -out ca.csr  # Cert signing request => ca.csr
+openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt  # Sign cert => ca.crt
+
+openssl genrsa -out admin.key 2048 
+openssl req -new -key admin.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
+openssl x509 -req -in admin.csr –CA ca.crt -CAkey ca.key -out admin.crt  # api server key,crt
+
+# api server key,crt 
+openssl genrsa -out apiserver.key 2048 
+openssl req -new -key apiserver.key -subj "/CN=kube-apiserver" -out apiserver.csr -config openssl.cnf  # ->apiserver.csr
+openssl.cnf:
+  [req]
+  req_extensions = v3_req
+  [ v3_req ]
+  basicConstraints = CA:FALSE
+  keyUsage = nonRepudiation,
+  subjectAltName = @alt_names
+  [alt_names]
+  DNS.1 = kubernetes
+  DNS.2 = kubernetes.default
+  DNS.3 = kubernetes.default.svc
+  DNS.4 = kubernetes.default.svc.cluster.local
+  IP.1 = 10.96.0.1
+  IP.2 = 172.17.0.87
+
+openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt  # ->apiserver.crt
+
   
   
 ########################################################################### 6  Cluster Maintanence
