@@ -144,6 +144,10 @@ openssl.cnf:
 
 openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt  # ->apiserver.crt
 
+# view crt
+openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout
+
+
   
   
 ########################################################################### 6  Cluster Maintanence
