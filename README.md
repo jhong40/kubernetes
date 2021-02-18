@@ -11,7 +11,7 @@ cat user-token-details.csv
   --token-auth-file=user-token-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
     curl -v -k https://apiserverurl/api/v1/pods --header "Authorization: Bearer dkkkdfllflf1d"
     
-# TLS
+### TLS
   ssh-keygen => id_rsa, id_rsa.pub
   user1 => host1  (~/.ssh/authorized_keys: ssh-rsa id_rsa.pub) 
   ssh -i id_rsa user1@host1
@@ -28,7 +28,7 @@ openssl genrsa -out admin.key 2048
 openssl req -new -key admin.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
 openssl x509 -req -in admin.csr –CA ca.crt -CAkey ca.key -out admin.crt  # api server key,crt
 
-# api server key,crt 
+### api server key,crt 
 openssl genrsa -out apiserver.key 2048 
 openssl req -new -key apiserver.key -subj "/CN=kube-apiserver" -out apiserver.csr -config openssl.cnf  # ->apiserver.csr
 openssl.cnf:
@@ -48,10 +48,10 @@ openssl.cnf:
 
 openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt  # ->apiserver.crt
 
-# view crt
+### view crt
 openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout
 
-# new user jane
+### new user jane
 openssl genrsa -out jane.key 2048
 openssl req -new -key jane.key -subj "/CN=jane" -out jane.csr # -> jane.csr
 cat jane.csr | base64  # -> {result}
@@ -77,7 +77,7 @@ cat jane.csr | base64  # -> {result}
   jane approved!
  kubectl get csr jane -o yaml # => retrive the certificate, then decode with base64 --decode
  
- # Kubeconf
+ ### Kubeconf
  
  curl https://my-kube-playground:6443/api/v1/pods \
 --key admin.key
@@ -121,7 +121,7 @@ kubectl config view
   client-certificate-data: REDACTED
   client-key-data: REDACTED
 
-# API Group
+### API Group
 /metrics /healthz /version /api /apis /logs
 
 core group /api /api/V1
