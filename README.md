@@ -202,7 +202,7 @@ securityContext:   # Pod: for all container. or specific container
 ```
 ### Network Policy
 ```
-//API Pod -> DB Pod -> BackUpserver 
+#API Pod -> DB Pod -> BackUpserver 
 kind: NetworkPolicy
 metadata:
   name: db-policy
