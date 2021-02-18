@@ -13,6 +13,7 @@ cat user-token-details.csv
     curl -v -k https://apiserverurl/api/v1/pods --header "Authorization: Bearer dkkkdfllflf1d"
 ```
 ### TLS
+```
   ssh-keygen => id_rsa, id_rsa.pub
   user1 => host1  (~/.ssh/authorized_keys: ssh-rsa id_rsa.pub) 
   ssh -i id_rsa user1@host1
@@ -48,8 +49,9 @@ openssl.cnf:
   IP.2 = 172.17.0.87
 
 openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt  # ->apiserver.crt
-
+```
 ### view crt
+```
 openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout
 
 ### new user jane
@@ -121,10 +123,10 @@ kubectl config view
   user:
   client-certificate-data: REDACTED
   client-key-data: REDACTED
-
+```
 ### API Group
 /metrics /healthz /version /api /apis /logs
-
+```
 core group /api /api/V1
 named group /apis
   groups: /apis: /apps, /extensions/networking.k8s.io, /storage.k8s.io /authencations.k8s.io
@@ -144,3 +146,6 @@ named group /apis
   2. kubectl proxy 
      Starting to server on 127.0.0.01:8080
      curl http://localhost:8080 -k  #without key,cert,cacert
+     
+     
+```     
