@@ -218,8 +218,30 @@ kubectl config view
   client-key-data: REDACTED
 
 # API Group
+/metrics /healthz /version /api /apis /logs
 
+core group /api /api/V1
+named group /apis
+  groups: /apis: /apps, /extensions/networking.k8s.io, /storage.k8s.io /authencations.k8s.io
+  resources: (list, get, create, delete, update, watch)
+  /apis/v1/deployments
+          /replicases
+          /statefulsets
+  /apis/extensions
+  /apis/networking.k8s.io/v1/networkingpolicies
+  /apis/certificates.k8s.io/certificatesigningrequests
   
+  1. 
+   curl https://my-kube-playground:6443/api/v1/pods \
+--key admin.key
+--cert admin.crt
+--cacert ca.crt
+  2. kubectl proxy 
+     Starting to server on 127.0.0.01:8080
+     curl http://localhost:8080 -k  #without key,cert,cacert
+     
+     
+     
 ########################################################################### 6  Cluster Maintanence
 
 #### Cluster Maintenence
