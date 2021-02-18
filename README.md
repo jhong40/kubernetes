@@ -188,7 +188,48 @@ kubectl create secret docker-registry regcred \
 --docker-server= private-r istry.io --docker-username=user1 --docker-password=pass1 --docker-email=abc@org.com
 imagePullSecrets: regcred
 
-
-
 ```
+### Security Context
+```
+docker run --user=1001 ubuntu sleep 3600
+docker run --cap-add MAC_ADMIN ubuntu
 
+securityContext:   # Pod: for all container. or specific container
+  runAsUser: 1000
+  capabilities:
+    add: ["MAC_ADMIN"]  # capabilities can only for container, not pod
+    
+```
+### Network Policy
+```
+//API Pod -> DB Pod -> BackUpserver 
+kind: NetworkPolicy
+metadata:
+  name: db-policy
+spec:
+  podSelector:
+    matchLables:
+      role: db
+  policyTypes:
+  - Ingress   
+  - Egress
+  ingress:
+  - from:
+    - podSelectore:
+        matchLabels:
+          name: api-pod
+      (namespaceSelector:
+        matchLabels:
+          name: prod)
+    (- ipBlock: 
+          cidr: 192.168.5.10/32)
+    ports:
+    - protocol: TCP
+      port: 3306
+  - to:
+    - ipBlock:
+        cidr: 192.168.5.11/32
+      ports:
+      - protocol: TCP
+        port: 80
+```
