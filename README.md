@@ -146,6 +146,16 @@ named group /apis
   2. kubectl proxy 
      Starting to server on 127.0.0.01:8080
      curl http://localhost:8080 -k  #without key,cert,cacert
-     
-     
-```     
+### Authorization 
+Mechanism: Node, ABAC, RBAC, Webhook, AlwaysAllow, AlwaysDeny
+Node authorizor (kubelet)
+ABAC: dev-user (view pod,create,delete pod) for every user
+RBAC: developerrole(view/create/delete pod), developer in developerrole
+Webhook: Open Policy Agent
+
+--authorization-mode=AlwaysAllow  # default
+--authorization-mode=Node,RBAC,WebHook  # denied then foward to the next oneRBAC
+```
+### RBAC
+```
+```
