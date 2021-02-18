@@ -1,11 +1,11 @@
 # 7 Security
 user/pass, user/token, cert, ldap(3rd party)
-# user-details.csv
+cat user-details.csv
    password123,user1,u0001,group1
    password123,user2,u0002,group2
   --basic-auth-file=user-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
   curl -v -k https://apiserverurl/api/v1/pods -u "user1:password123"
-# user-token-details.csv
+cat user-token-details.csv
    dkkkdfllflf1dkd,user1,u0001,group1
    2kkkdfll2lf1dkd,user2,u0002,group2
   --token-auth-file=user-token-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
