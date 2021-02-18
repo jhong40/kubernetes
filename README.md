@@ -1,4 +1,5 @@
 # 7 Security
+```
 user/pass, user/token, cert, ldap(3rd party)
 cat user-details.csv
    password123,user1,u0001,group1
@@ -10,7 +11,7 @@ cat user-token-details.csv
    2kkkdfll2lf1dkd,user2,u0002,group2
   --token-auth-file=user-token-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
     curl -v -k https://apiserverurl/api/v1/pods --header "Authorization: Bearer dkkkdfllflf1d"
-    
+```
 ### TLS
   ssh-keygen => id_rsa, id_rsa.pub
   user1 => host1  (~/.ssh/authorized_keys: ssh-rsa id_rsa.pub) 
