@@ -1,312 +1,145 @@
-### 5 App lifecycle management
-
-#### create deployment
-```
-kubectl create deployment webapp1 --image=nginx:1.16-alpine-perl --dry-run=client -o yaml > webapp1.yml
-```
-
-#### create pod
-```
-kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml
-
-#rollout
-k apply -f webapp2.yml  #nginx:1.17-alpine-perl
-
-kubectl rollout status deployment webapp1
-deployment "webapp1" successfully rolled out
-
-kubectl get deployment -o wide | grep webapp1
-webapp1   8/10    5            8           27h    nginx        nginx:1.17-alpine                   app=webapp
-
-kubectl rollout undo deploy webapp1
-deployment.apps/webapp1 rolled back
-
-kubectl get deployment -o wide | grep webapp1
-webapp1   10/10   10           10          27h    nginx        nginx:1.16-alpine                   app=webapp
-
-kp -w
-
-kubectl scale --replicas=5 deployment/webapp1
-```
-### CronJobs / ConfigMap
-
-#### Installation, configuration, Validation (kubeadm)
-# kubeadmin init, kubeadm join, kubeadm reset
-
-
-kubectl get componentstatus
-NAME                 STATUS    MESSAGE             ERROR
-controller-manager   Healthy   ok                  
-etcd-0               Healthy   {"health":"true"}   
-scheduler            Healthy   ok  
-
-
-kubectl cluster-info
-Kubernetes master is running at https://1a733cd8-97a3-452d-b3e9-8968c5836625.k8s.ondigitalocean.com
-CoreDNS is running at https://1a733cd8-97a3-452d-b3e9-8968c5836625.k8s.ondigitalocean.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
-
-To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
-
-
-kubectl get nodes
-NAME                   STATUS   ROLES    AGE     VERSION
-pool-nyqch4qlz-3p9k6   Ready    <none>   5d11h   v1.18.8
-pool-nyqch4qlz-3pjhg   Ready    <none>   12d     v1.18.8
-
-#### Networking
-$ kubectl expose deployment webapp1 --port=80
-service/webapp1 exposed
-
-$ kubectl get svc | grep webapp1
-webapp1      ClusterIP   10.245.61.106    <none>        80/TCP    25s
-
-$ kubectl get svc -o=wide | grep webapp1
-webapp1      ClusterIP   10.245.61.106    <none>        80/TCP    80s    app=webapp
-
-$ kubectl expose deployment webapp1 --port=80 --dry-run -o yaml
-W1027 22:26:38.363187   23564 helpers.go:535] --dry-run is deprecated and can be replaced with --dry-run=client.
-apiVersion: v1
-kind: Service
-metadata:
-  creationTimestamp: null
-  labels:
-    app: webapp1
-  name: webapp1
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
-  selector:
-    app: webapp
-status:
-  loadBalancer: {}
-
-
-#### scheduling
-kubectl label nodes node1 disktype=ssd
-
-kubectl get nodes --show-labels=true
-
-# in deployment, select the above node
-nodeSelector:
-  distype: "ssd"
+# 7 Security
+user/pass, user/token, cert, ldap(3rd party)
+# user-details.csv
+   password123,user1,u0001,group1
+   password123,user2,u0002,group2
+  --basic-auth-file=user-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
+  curl -v -k https://apiserverurl/api/v1/pods -u "user1:password123"
+# user-token-details.csv
+   dkkkdfllflf1dkd,user1,u0001,group1
+   2kkkdfll2lf1dkd,user2,u0002,group2
+  --token-auth-file=user-token-details.csv in kube-apiserver.service or /etc/kubernetes/manifests/kube-apiserver.yaml (create volume attached)
+    curl -v -k https://apiserverurl/api/v1/pods --header "Authorization: Bearer dkkkdfllflf1d"
+    
+# TLS
+  ssh-keygen => id_rsa, id_rsa.pub
+  user1 => host1  (~/.ssh/authorized_keys: ssh-rsa id_rsa.pub) 
+  ssh -i id_rsa user1@host1
   
-# multiple scheduler
-# manually schedule pod without a scheduler
+  PKI (CA, Cert/Key, server, browser)
+  public key: .crt .pem
+  private key: .key, -key.pem
+   
+openssl genrsa -out ca.key 2048  # generate key => ca.key
+openssl req -new -key ca.key -subj "/CN=KUBERNETES-CA" -out ca.csr  # Cert signing request => ca.csr
+openssl x509 -req -in ca.csr -signkey ca.key -out ca.crt  # Sign cert => ca.crt
 
-kubectl get events -w # watch event as it happens
+openssl genrsa -out admin.key 2048 
+openssl req -new -key admin.key -subj "/CN=kube-admin/O=system:masters" -out admin.csr
+openssl x509 -req -in admin.csr –CA ca.crt -CAkey ca.key -out admin.crt  # api server key,crt
 
-#### Security
+# api server key,crt 
+openssl genrsa -out apiserver.key 2048 
+openssl req -new -key apiserver.key -subj "/CN=kube-apiserver" -out apiserver.csr -config openssl.cnf  # ->apiserver.csr
+openssl.cnf:
+  [req]
+  req_extensions = v3_req
+  [ v3_req ]
+  basicConstraints = CA:FALSE
+  keyUsage = nonRepudiation,
+  subjectAltName = @alt_names
+  [alt_names]
+  DNS.1 = kubernetes
+  DNS.2 = kubernetes.default
+  DNS.3 = kubernetes.default.svc
+  DNS.4 = kubernetes.default.svc.cluster.local
+  IP.1 = 10.96.0.1
+  IP.2 = 172.17.0.87
 
+openssl x509 -req -in apiserver.csr -CA ca.crt -CAkey ca.key -out apiserver.crt  # ->apiserver.crt
 
-#### Cluster Maintenence
-# Upgrade
-backup
-upgrade kubeadm
-drain the control plane node
-kubeadm upgrade plan
-kubeadm upgrade apply v1.18.x
-kubectl uncordon
-upgrade kubectl
-systemctl restart kubelet
-upgrade worker nodes
+# view crt
+openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout
 
-### 6  Cluster Maintanence
+# new user jane
+openssl genrsa -out jane.key 2048
+openssl req -new -key jane.key -subj "/CN=jane" -out jane.csr # -> jane.csr
+cat jane.csr | base64  # -> {result}
 
-#### Upgrade: 1.16->1.17->1.18 (no 1.16->1.18 directly)
-```
-kubectl drain node-1    # evict pods, and mark unschedule
-kubectl cordon node-1   # mark unschedule
-kubectl uncordon node-1 # makr schedule
+  apiVersion: certificates.k8s.io/v1beta1
+  kind: CertificateSigningRequest
+    metadata:
+  name: jane
+  spec:
+  groups:
+  - system:authenticated
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+  request:
+    {result}
+ 
+ kubectl get csr
+  NAME AGE REQUESTOR CONDITION
+  jane 10m admin@example.com Pending
+ kubectl certificate approve jane
+  jane approved!
+ kubectl get csr jane -o yaml # => retrive the certificate, then decode with base64 --decode
+ 
+ # Kubeconf
+ 
+ curl https://my-kube-playground:6443/api/v1/pods \
+--key admin.key
+--cert admin.crt
+--cacert ca.crt
+{
+"kind": "PodList", 
+"apiVersion": "v1",
+"metadata": {
+"selfLink": "/api/v1/pods",
+},
+"items": []
+}
 
-## master1 node
-apt update; apt upgrade -y kubeadmin=1.19.0-00
-kubectl upgrade plan         
-kubectl upgrade apply 1.19.0
-apt upgrade -y kubelet=1.19.0-00
-systemctl restart kubelet
+kubectl get pods
+--server myapiserver:6443
+--client-key admin.key
+--client-certificate admin.crt
+--certificate-authority ca.crt
 
-## other nodes (master2 and worker node)
-apt update; apt upgrade -y kubeadmin=1.19.0-00
-kubectl upgrade node
-apt upgrade -y kubelet=1.19.0-00
-systemctl restart kubelet
+kubectl get pods --kubeconfig config
+kubectl get pods # ~/.kube/config
 
-## one after another
-kubectl drain node1
-kubectl uncordon node1
-kubectl drain node2
-kubectl uncordon node2
-```
-#### Backup - Restore
-```
-kubectl get all --all-namespaces -o yaml > all-deployment-services.yaml
-(velero - former called ark)
-```
+kubectl config view
+  apiVersion: v1
+  kind: Config
+  current-context: kubernetes-admin@kubernetes
+  clusters:
+  - cluster:
+  certificate-authority-data: REDACTED
+  server: https://172.17.0.5:6443
+  name: kubernetes
+  contexts:
+  - context:
+  cluster: kubernetes
+  user: kubernetes-admin
+  name: kubernetes-admin@kubernetes
+  users:
+  - name: kubernetes-admin
+  user:
+  client-certificate-data: REDACTED
+  client-key-data: REDACTED
 
-1. etcd volume snapshot (data-dir folder backup): when launched, there is --data-dir parm which define the etcd data file, backup that file.
-2. etcd built-in snapshot
+# API Group
+/metrics /healthz /version /api /apis /logs
 
-#### backup to a db file
-ETCDCTL_API=3 etcdctl --endpoints=https:/127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt \
-     --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
-     snapshot save /opt/snapshot-pre-boot.db
-
-# restore to a folder /var/lib/etcd-from-backup 
-ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt \
-     --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
-     --data-dir /var/lib/etcd-from-backup \
-     snapshot restore /opt/snapshot-pre-boot.db
-
-# config etc to use that folder
-# if etcd is a process:
-    Command:
-      etcd
-      --advertise-client-urls=ttps://172.17.0.21:2379
-      --cert-file=/etc/kubernetes/pki/etcd/server.crt
-      --client-cert-auth=true
-      --data-dir=/var/lib/etcd   ******=> etcd-from-backup
-      --initial-advertise-peer-urls=https://172.17.0.21:2380
-      --initial-cluster=controlplane=https://172.17.0.21:2380
-      --key-file=/etc/kubernetes/pki/etcd/server.key
-      --listen-client-urls=https://127.0.0.1:2379,https://172.17.0.21:2379
-      --listen-metrics-urls=http://127.0.0.1:2381
-      --listen-peer-urls=https://172.17.0.21:2380
-      --name=controlplane
-      --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
-      --peer-client-cert-auth=true
-      --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
-      --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
-      --snapshot-count=10000
-      --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
-# if etcd is a pod: /etc/kubernetes/manifests/etcd.yaml,  path: /var/lib/etcd-from-backup
-  volumes:
-  - hostPath:
-      path: /var/lib/etcd-from-backup
-      type: DirectoryOrCreate
-    name: etcd-data
-  - hostPath:
-      path: /etc/kubernetes/pki/etcd
-      type: DirectoryOrCreate
-    name: etcd-certs
+core group /api /api/V1
+named group /apis
+  groups: /apis: /apps, /extensions/networking.k8s.io, /storage.k8s.io /authencations.k8s.io
+  resources: (list, get, create, delete, update, watch)
+  /apis/v1/deployments
+          /replicases
+          /statefulsets
+  /apis/extensions
+  /apis/networking.k8s.io/v1/networkingpolicies
+  /apis/certificates.k8s.io/certificatesigningrequests
   
-# etcd key/value   
-ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/ca.crt --cert=/etc/etcd/etcd.crt --key=/etc/etcd/etcd.key put course "Today is great"
-ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/etcd/ca.crt --cert=/etc/etcd/etcd.crt --key=/etc/etcd/etcd.key get course
-
-
-####################################################  Monitor and Logging
-## Monitor cluster
-# Node problem detector
-# Metrics-server
-kubectl top nodes
-kubectl top pods
-
-## monitor app
-Liveness probe  
-Readiness probe
-
-## Cluster component log
-# node /var/log or /var/log/containers
-kube-apiserver.log kube-scheduler.log, kube-controller-manager.log
-kubelet.log kube-proxy.log
-
-## app logs
-kubectl logs pod1
-kubectl describe pod1
-
-
-
-### Storage
-# Static Provisioning
-# create storage, pv, pvc, pod (using pvc)
---pod
-volumeMounts:
-- mountPath: /log
-  name: log-volume
-volumes:
-- name: log-volum
-  hostpath:
-    path: "/var/log/webapp"
-
-
---pv
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: pv-log
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 100Mi
-  accessModes:
-    - ReadWriteMany
-  hostPath:
-    path: "/pv/log"
-
---pvc
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: claim-log-1
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 30Mi
---pod
-volumeMounts:
-- mountPath: /log
-  name: log-volume
-volumes:
-- name: log-volum
-  persistentVolumeClaim:
-    claimName: claim-log-1
-
-# Dynamic Provsioning
-Storage class (dynamically create storage), pvc, pod (using pvc)
-
-
-
-### Json Path
-kubectl get pods -o=jsonpath='{ .items[1].spec.containers[0].image }'  
-nginx
-
-kubectl get nodes -o=jsonpath='{.items[*].metadata.name}'    
-master node1 node2
-
-kubectl get nodes -o=jsonpath='{.items[*].status.nodeInfo.architecture}' 
-amd64 amd64 amd64 
-
-kubectl get nodes -o=jsonpath='{.items[*].status.capacity.cpu}'
-12 12 12
-
-kubectl get nodes -o=jsonpath='{.items[*].metadata.name} {.items[*].status.capacity.cpu}'
-master node1 node2 12 12 12
-
-
-kubectl get nodes -o=jsonpath='{.items[*].metadata.name} {"\n"} {.items[*].status.capacity.cpu}'  
-master node1 node2 
-12 12 12
-
-kubectl get nodes -o=jsonpath='{range .items[*]} {.metadata.name} {"\t"} {.status.capacity.cpu}{"\n"}{end}'
-master 12
-node1  12
-node2  12
-
-
-kubectl get nodes -o=custom-columns='NODE:.metadata.name, CPU:.status.capacity.cpu'
-Node   CPU
-master 12
-node1  12
-node2  12
-
-
-kubectl get nodes --sort-by=.metadata.name
-
-kubectl get nodes --sort-by=.status.capacity.cpu
-
-k -n postgresql get secret postgresql -o=jsonpath='{.data.postgresql-password}' | base64 --decode | more
+  1. 
+   curl https://my-kube-playground:6443/api/v1/pods \
+--key admin.key
+--cert admin.crt
+--cacert ca.crt
+  2. kubectl proxy 
+     Starting to server on 127.0.0.01:8080
+     curl http://localhost:8080 -k  #without key,cert,cacert
