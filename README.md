@@ -158,4 +158,37 @@ Webhook: Open Policy Agent
 ```
 ### RBAC
 ```
+Role
+RoleBinding
+kubectl get roles
+kubectl get rolebindings
+kubectl auth can-i create deployments  # yes or no
+kubectl auth can-i delete nodes
+kubectl auth can-i create deployments --as dev-user
 ```
+
+### Cluster Roles and Rolebinding
+```
+Cluster wide resources:
+nodes, pv, clusterroles, clusterrolebindings, certficatesigingrequests, namespaces
+ClusterAdmin: view/create/delete Node
+StorageAdmin: view/create/delete PV
+ClusterRole
+ClusterRoleBinding
+
+```
+### Image Security
+```
+image: dockerio/nginx/nginx  (registry/user/imagerepository)
+
+docker login private-registry.io  # supply id/pass
+docker run private-registry.io/apps/myapp  
+
+kubectl create secret docker-registry regcred \
+--docker-server= private-r istry.io --docker-username=user1 --docker-password=pass1 --docker-email=abc@org.com
+imagePullSecrets: regcred
+
+
+
+```
+
