@@ -244,6 +244,10 @@ named group /apis
      
 ########################################################################### 6  Cluster Maintanence
 
+apt policy kubeadm  #show diff version
+apt install -y kubeadm=1.21.0-00
+
+
 #### Cluster Maintenence
 
 # Upgrade
