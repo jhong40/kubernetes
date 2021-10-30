@@ -13,7 +13,7 @@ kubesec scan /root/node.yaml  > /root/kubesec_report.json
 
 ```
 
-trivy
+## trivy
 
 ```
 #Add the trivy-repo
@@ -26,10 +26,7 @@ echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main |
 apt-get update
 apt-get install trivy
 
-```
 
-## trivy nginx
-```
 docker pull python:3.10.0a4-alpine
 trivy image --output /root/python_alpine.txt python:3.10.0a4-alpine
 
