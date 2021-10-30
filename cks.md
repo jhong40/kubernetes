@@ -1,5 +1,52 @@
 # Suply Chain Security
 
+## white list allowed registry
+```
+kubectl apply -f image-policy-webhook.yaml
+   image-bouncer-webhook:30080
+
+#     --registry-whitelist=docker.io,k8s.gcr.io
+
+/etc/kubernetes/pki/admission_configuration.yaml  # refer to kubeconfigfile
+  kubeConfigFile: /etc/kubernetes/pki/admission_kube_config.yaml
+  
+root@controlplane:/etc/kubernetes/pki# cat admission_configuration.yaml 
+apiVersion: apiserver.config.k8s.io/v1
+kind: AdmissionConfiguration
+plugins:
+- name: ImagePolicyWebhook
+  configuration:
+    imagePolicy:
+      kubeConfigFile: /etc/kubernetes/pki/admission_kube_config.yaml 
+      allowTTL: 50
+      denyTTL: 50
+      retryBackoff: 500
+      defaultAllow: false  
+
+kubeConfigFile: /etc/kubernetes/pki/admission_kube_config.yaml  # https://image-bouncer-webhook:30080
+  server: https://image-bouncer-webhook:30080/image_policy
+
+
+/etc/kubernetes/manifests/kube-apiserver.yaml
+    - --enable-admission-plugins=NodeRestriction,ImagePolicyWebhook
+    - --admission-control-config-file=/etc/kubernetes/pki/admission_configuration.yaml
+
+
+kubectl apply -f /root/nginx-latest.yml
+replicaset.apps/nginx-latest created
+
+kubectl describe replicaset nginx-latest
+Error from server (Forbidden): pods "nginx" is forbidden: image policy webhook backend denied one or more images: Images using latest tag are not allowed
+
+ image: nginx:1.19
+ kubectl apply -f /root/nginx-latest.yml
+
+ 
+
+
+```
+
+
 ## kybesec # scac yaml 
 
 ```
