@@ -40,10 +40,7 @@ Error from server (Forbidden): pods "nginx" is forbidden: image policy webhook b
 
  image: nginx:1.19
  kubectl apply -f /root/nginx-latest.yml
-
  
-
-
 ```
 
 
