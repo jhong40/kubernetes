@@ -1,6 +1,6 @@
 # Suply Chain Security
 
-kybesec # scac yaml 
+## kybesec # scac yaml 
 
 ```
 wget https://github.com/controlplaneio/kubesec/releases/download/v2.11.0/kubesec_linux_amd64.tar.gz
@@ -26,10 +26,10 @@ echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main |
 apt-get update
 apt-get install trivy
 
+```
 
-
-trivy nginx
-
+## trivy nginx
+```
 docker pull python:3.10.0a4-alpine
 trivy image --output /root/python_alpine.txt python:3.10.0a4-alpine
 
