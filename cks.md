@@ -23,7 +23,7 @@ spec:
     
 
 
-## white list allowed registry
+## white list allowed registry  # enforce image not using latest
 ```
 kubectl apply -f image-policy-webhook.yaml
    image-bouncer-webhook:30080
@@ -67,7 +67,7 @@ Error from server (Forbidden): pods "nginx" is forbidden: image policy webhook b
 ```
 
 
-## kybesec # scac yaml 
+## kybesec # scan kube manifest yaml 
 
 ```
 wget https://github.com/controlplaneio/kubesec/releases/download/v2.11.0/kubesec_linux_amd64.tar.gz
@@ -80,7 +80,7 @@ kubesec scan /root/node.yaml  > /root/kubesec_report.json
 
 ```
 
-## trivy
+## trivy  # image
 
 ```
 #Add the trivy-repo
