@@ -189,8 +189,34 @@ root@controlplane:/#
   tags: [process, mitre_persistence]
   
   kill -1 $(cat /var/run/falco.pid)
+```
+## ENSURE IMMUTABILITY OF CONTAINERS AT RUNTIME
+```
+    securityContext:
+      privileged: true               #need: not true    withtout: container can be priviliged
+      readOnlyRootFilesystem: true   #need: true    without it: pod can write to root file system
+      
 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: triton
+  name: triton
+  namespace: alpha
+spec:
+  containers:
+  - image: httpd
+    name: triton
+    securityContext:
+      readOnlyRootFilesystem: true
+    volumeMounts:
+    - mountPath: /usr/local/apache2/logs
+      name: log-volume
+  volumes:
+  - name: log-volume
+    emptyDir: {}      
+      
 
 ```
-
 
