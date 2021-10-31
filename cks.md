@@ -1,5 +1,28 @@
 # Suply Chain Security
 
+## image security
+
+```
+  - image: myprivateregistry.com:5000/nginx:alpine
+
+
+kubectl create secret docker-registry private-reg-cred --docker-username=dock_user --docker-password=dock_password --docker-server=myprivateregistry.com:5000 --docker-email=dock_user@myprivateregistry.com
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: foo
+  namespace: awesomeapps
+spec:
+  containers:
+    - name: foo
+      image: janedoe/awesomeapp:v1
+  imagePullSecrets:
+    - name: myregistrykey
+```    
+    
+
+
 ## white list allowed registry
 ```
 kubectl apply -f image-policy-webhook.yaml
