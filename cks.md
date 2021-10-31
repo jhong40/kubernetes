@@ -136,3 +136,60 @@ trivy image --input alpine.tar --format json --output /root/alpine.json
 
 
 ```
+
+# Monitoring, Logging and Runtime Security
+
+## Falco
+```
+systemctl status falco
+journalctl -u falco
+
+/etc/falco/falco.yaml
+
+Oct 31 03:25:50 controlplane falco[632]: 03:25:50.514987067: Error Package management process launched in container (user=root user_loginuid=-1 command=apt update container_id=316f59cd09a1 container_name=k8s_simple-webapp-1_simple-webapp-1_critical-apps_37a12c57-f0a5-4768-8016-8f60dd6af7d3_0 image=nginx:latest)
+
+Oct 31 03:28:29 controlplane falco[632]: 03:28:29.117105566: Error File below / or /root opened for writing (user=root user_loginuid=-1 command=bash parent=bash file=/root/compromised_pods.txt program=bash container_id=host image=<NA>)
+
+root@controlplane:/# grep -ir 'Package management process launched in container' /etc/falco/ 
+/etc/falco/falco_rules.yaml:    Package management process launched in container (user=%user.name user_loginuid=%user.loginuid
+root@controlplane:/# 
+
+# Container is supposed to be immutable. Package management should be done in building the image.
+- rule: Launch Package Management Process in Container
+  desc: Package management process ran inside container
+  condition: >
+    spawned_process
+    and container
+    and user.name != "_apt"
+    and package_mgmt_procs
+    and not package_mgmt_ancestor_procs
+    and not user_known_package_manager_in_container
+  output: >
+    Package management process launched in container (user=%user.name user_loginuid=%user.loginuid
+    command=%proc.cmdline container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+  priority: ERROR
+  tags: [process, mitre_persistence]
+  
+  
+  
+  /etc/falco/falco_rules.local.yaml
+  - rule: Launch Package Management Process in Container
+  desc: Package management process ran inside container
+  condition: >
+    spawned_process
+    and container
+    and user.name != "_apt"
+    and package_mgmt_procs
+    and not package_mgmt_ancestor_procs
+    and not user_known_package_manager_in_container
+  output: >
+    Package Management Tools Executed (user=%user.name command=%proc.cmdline container_id=%container.id)
+  priority: ERROR
+  tags: [process, mitre_persistence]
+  
+  kill -1 $(cat /var/run/falco.pid)
+
+
+```
+
+
