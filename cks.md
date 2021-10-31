@@ -154,6 +154,7 @@ root@controlplane:/# grep -ir 'Package management process launched in container'
 /etc/falco/falco_rules.yaml:    Package management process launched in container (user=%user.name user_loginuid=%user.loginuid
 root@controlplane:/# 
 
+/etc/falco/falco_rules.yaml
 # Container is supposed to be immutable. Package management should be done in building the image.
 - rule: Launch Package Management Process in Container
   desc: Package management process ran inside container
