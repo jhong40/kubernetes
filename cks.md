@@ -2,12 +2,7 @@
 # Minimize Microservice Vulnerabilities
 ## Security Contexts
 ```
-kubectl exec ubuntu-sleeper -- whoami
-
-  securityContext:
-    runAsUser: 1010
-    
-    
+kubectl exec ubuntu-sleeper -- whoami   
 ```
 ``` yaml
 apiVersion: v1
