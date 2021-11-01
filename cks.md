@@ -4,7 +4,7 @@
     apiVersion: v1
     kind: Pod
     metadata:
-      name: multi-pod
+      name: **multi-pod**
     spec:
       securityContext:
         runAsUser: 1001
