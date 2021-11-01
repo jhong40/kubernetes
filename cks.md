@@ -11,15 +11,15 @@ metadata:
   name: multi-pod
 spec:
   securityContext:
-    runAsUser: 1001
+    runAsUser: 1001    ***
   containers:
   -  image: ubuntu
      name: web
      command: ["sleep", "5000"]
      securityContext:
-       runAsUser: 1002
+       runAsUser: 1002   ***
        capabilities:
-         add: ["SYS_TIME"]      
+         add: ["SYS_TIME"]  ***    
   -  image: ubuntu
      name: sidecar
      command: ["sleep", "5000"]
