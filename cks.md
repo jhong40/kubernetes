@@ -227,4 +227,53 @@ spec:
     runAsGroup: 3000
     fsGroup: 2000
 ```
+## Audit
+```
+Create /etc/kubernetes/prod-audit.yaml as below:
+
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+- level: Metadata
+  namespaces: ["prod"]
+  verbs: ["delete"]
+  resources:
+  - group: ""
+    resources: ["secrets"]
+    
+Next, make sure to enable logging in api-server:
+
+ - --audit-policy-file=/etc/kubernetes/prod-audit.yaml
+ - --audit-log-path=/var/log/prod-secrets.log
+ - --audit-log-maxage=30
+ 
+Then, add volumes and volume mounts as shown in the below snippets.
+volumes:
+
+  - name: audit
+    hostPath:
+      path: /etc/kubernetes/prod-audit.yaml
+      type: File
+
+  - name: audit-log
+    hostPath:
+      path: /var/log/prod-secrets.log
+      type: FileOrCreate
+volumeMounts:
+
+  - mountPath: /etc/kubernetes/prod-audit.yaml
+    name: audit
+    readOnly: true
+  - mountPath: /var/log/prod-secrets.log
+    name: audit-log
+    readOnly: false
+
+then save the file and make sure that kube-apiserver restarts.
+
+
+{"kind":"Event","apiVersion":"audit.k8s.io/v1","level":"Metadata","auditID":"9787902b-0abe-4fb3-9c6e-4a090caa26c7","stage":"RequestReceived","requestURI":"/api/v1/namespaces/prod/secrets/blah","verb":"delete","user":{"username":"kubernetes-admin","groups":["system:masters","system:authenticated"]},"sourceIPs":["10.41.5.3"],"userAgent":"kubectl/v1.20.0 (linux/amd64) kubernetes/af46c47","objectRef":{"resource":"secrets","namespace":"prod","name":"blah","apiVersion":"v1"},"requestReceivedTimestamp":"2021-11-01T17:33:36.892980Z","stageTimestamp":"2021-11-01T17:33:36.892980Z"}
+{"kind":"Event","apiVersion":"audit.k8s.io/v1","level":"Metadata","auditID":"9787902b-0abe-4fb3-9c6e-4a090caa26c7","stage":"ResponseComplete","requestURI":"/api/v1/namespaces/prod/secrets/blah","verb":"delete","user":{"username":"kubernetes-admin","groups":["system:masters","system:authenticated"]},"sourceIPs":["10.41.5.3"],"userAgent":"kubectl/v1.20.0 (linux/amd64) kubernetes/af46c47","objectRef":{"resource":"secrets","namespace":"prod","name":"blah","apiVersion":"v1"},"responseStatus":{"metadata":{},"status":"Success","code":200},"requestReceivedTimestamp":"2021-11-01T17:33:36.892980Z","stageTimestamp":"2021-11-01T17:33:36.900224Z","annotations":{"authorization.k8s.io/decision":"allow","authorization.k8s.io/reason":""}}
+
+```
+
 
