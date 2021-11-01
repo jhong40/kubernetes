@@ -2,7 +2,9 @@
 # Minimize Microservice Vulnerabilities
 
 ## Security Contexts
+```
 kubectl exec ubuntu-sleeper -- whoami
+```
 ``` yaml
 apiVersion: v1
 kind: Pod
