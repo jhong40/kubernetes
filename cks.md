@@ -84,6 +84,21 @@ spec:
     - port: 443
       targetPort: webhook-api
 ```
+```yaml
+# /root/webhook-configuration.yaml
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: demo-webhook
+webhooks:
+  - name: webhook-server.webhook-demo.svc
+    clientConfig:
+      service:
+        name: webhook-server
+        namespace: webhook-demo
+        path: "/mutate"
+      caBundle: xxxx    rules:      - operations: [ "CREATE" ]        apiGroups: [""]        apiVersions: ["v1"]        resources: ["pods"]~
+```
 ## Pod Security Policy
 ## OPA
 ## Manage Kubernetes secrets
