@@ -2,7 +2,7 @@
 # Minimize Microservice Vulnerabilities
 ## Security Contexts
 ```
-kubectl exec ubuntu-sleeper -- whoami   
+**kubectl exec ubuntu-sleeper -- whoami**   
 ```
 ``` yaml
 apiVersion: v1
