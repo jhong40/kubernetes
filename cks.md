@@ -97,7 +97,12 @@ webhooks:
         name: webhook-server
         namespace: webhook-demo
         path: "/mutate"
-      caBundle: xxxx    rules:      - operations: [ "CREATE" ]        apiGroups: [""]        apiVersions: ["v1"]        resources: ["pods"]~
+      caBundle: xxxx    
+    rules:     
+      - operations: [ "CREATE" ]        
+        apiGroups: [""]        
+        apiVersions: ["v1"]        
+        resources: ["pods"]
 ```
 ## Pod Security Policy
 ## OPA
