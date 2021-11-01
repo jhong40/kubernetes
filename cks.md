@@ -132,6 +132,38 @@ Error from server: error when creating "/root/pod-with-conflict.yaml": admission
 ```
 
 ## Pod Security Policy
+```
+ps -ef | grep api | grep able  # check enable-admission-plugins or disable-admission-plugins
+kube-apiserver.yaml
+    - --enable-admission-plugins=NodeRestriction,PodSecurityPolicy
+
+root@controlplane:~# cat psp.yaml 
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: example-psp
+spec:
+  privileged: false
+  seLinux:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  volumes:
+  - configMap
+  - secret
+  - emptyDir
+  - hostPath
+
+kubectl apply -f /root/psp.yaml
+
+root@controlplane:~# kubectl apply -f pod.yaml        
+Error from server (Forbidden): error when creating "pod.yaml": pods "example-app" is forbidden: PodSecurityPolicy: unable to admit pod: [spec.containers[0].securityContext.privileged: Invalid value: true: Privileged containers are not allowed spec.containers[0].securityContext.capabilities.add: Invalid value: "CAP_SYS_BOOT": capability may not be added]
+ 
+```
 ## OPA
 ## Manage Kubernetes secrets
 ## Using Runtime in kubernetes (gvisor, kata)
