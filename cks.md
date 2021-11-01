@@ -39,7 +39,7 @@ kubectl -n webhook-demo create secret tls webhook-server-tls \
 kubectl create -f /root/webhook-deployment.yaml
 kubectl create -f /root/webhook-service.yaml
 
-kubectl create -f /root/webhook-configuration.yaml
+kubectl create -f /root/webhook-configuration.yaml    #############
     
 ```
 ``` yaml
@@ -93,7 +93,7 @@ spec:
       targetPort: webhook-api
 ```
 ```yaml
-# /root/webhook-configuration.yaml
+# /root/webhook-configuration.yaml                          ################
 #apiVersion: admissionregistration.k8s.io/v1beta1
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
@@ -116,6 +116,7 @@ webhooks:
         resources: ["pods"]
 ```
 ```
+#############################
 None =>   securityContext:       ### add securityContext
             runAsNonRoot: true
             runAsUser: 1234
