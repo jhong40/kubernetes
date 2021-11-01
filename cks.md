@@ -114,7 +114,32 @@ root@controlplane:~# kubectl apply -f pod.yaml
 Error from server (Forbidden): error when creating "pod.yaml": pods "example-app" is forbidden: PodSecurityPolicy: unable to admit pod: [spec.containers[0].securityContext.privileged: Invalid value: true: Privileged containers are not allowed spec.containers[0].securityContext.capabilities.add: Invalid value: "CAP_SYS_BOOT": capability may not be added]
  
 ```
-## OPA
+## OPA - Open Policy Agent (port 8181, rego)
+```
+export VERSION=v0.27.1
+curl -L -o opa https://github.com/open-policy-agent/opa/releases/download/${VERSION}/opa_linux_amd64
+chmod 755 ./opa
+./opa run -s &  
+
+root@controlplane:~# cat example.rego 
+package httpapi.authz
+import input
+default allow =     # default allow = flase  
+allow {
+ input.path == "home"
+ input.user == "Kedar"
+ }
+  
+./opa test example.rego
+1 error occurred during loading: example.rego:3: rego_parse_error: illegal default rule (value cannot contain var)
+        default allow = 
+        ^
+
+# load the policy file after fix the: default allow = false
+curl -X PUT --data-binary @sample.rego http://localhost:8181/v1/policies/samplepolicy
+ 
+  
+```  
 ## Manage Kubernetes secrets
 ## Using Runtime in kubernetes (gvisor, kata)
 ## Implement Pod to Pod encryption by mTLS
