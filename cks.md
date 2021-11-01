@@ -1,8 +1,6 @@
 
 # Minimize Microservice Vulnerabilities
 ## test
-
-## Security Contexts
   apiVersion: v1
   kind: Pod
   metadata:
@@ -13,6 +11,10 @@
     containers:
     -  image: ubuntu
        name: web
+
+
+
+## Security Contexts
 kubectl exec ubuntu-sleeper -- whoami
 ```
 ``` yaml
