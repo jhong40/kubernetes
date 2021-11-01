@@ -1,6 +1,7 @@
 
-# Minimize Microservice Vulnerabilities
-
+<details>
+  <summary>Minimize Microservice Vulnerabilities</summary>
+  
 ## Security Contexts
 ```
 kubectl exec ubuntu-sleeper -- whoami
@@ -117,6 +118,7 @@ Error from server (Forbidden): error when creating "pod.yaml": pods "example-app
 ## Manage Kubernetes secrets
 ## Using Runtime in kubernetes (gvisor, kata)
 ## Implement Pod to Pod encryption by mTLS
+</details>
 
 # Suply Chain Security
 
