@@ -120,7 +120,10 @@ Error from server (Forbidden): error when creating "pod.yaml": pods "example-app
 ## Implement Pod to Pod encryption by mTLS
 </details>
 
-# Suply Chain Security
+
+
+<details>
+  <summary>Suply Chain Security</summary>
 
 ## image security
 
@@ -258,6 +261,8 @@ trivy image --input alpine.tar --format json --output /root/alpine.json
 
 
 ```
+</details>  
+  
 
 # Monitoring, Logging and Runtime Security
 
