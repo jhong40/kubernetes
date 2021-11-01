@@ -20,7 +20,6 @@ spec:
        runAsUser: 1002
        capabilities:
          add: ["SYS_TIME"]      
-
   -  image: ubuntu
      name: sidecar
      command: ["sleep", "5000"]
