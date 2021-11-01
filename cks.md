@@ -263,9 +263,9 @@ trivy image --input alpine.tar --format json --output /root/alpine.json
 ```
 </details>  
   
-
-# Monitoring, Logging and Runtime Security
-
+<details>
+  <summary>Monitoring, Logging and Runtime Security</summary>
+  
 ## Falco
 ```
 systemctl status falco
@@ -402,5 +402,5 @@ then save the file and make sure that kube-apiserver restarts.
 {"kind":"Event","apiVersion":"audit.k8s.io/v1","level":"Metadata","auditID":"9787902b-0abe-4fb3-9c6e-4a090caa26c7","stage":"ResponseComplete","requestURI":"/api/v1/namespaces/prod/secrets/blah","verb":"delete","user":{"username":"kubernetes-admin","groups":["system:masters","system:authenticated"]},"sourceIPs":["10.41.5.3"],"userAgent":"kubectl/v1.20.0 (linux/amd64) kubernetes/af46c47","objectRef":{"resource":"secrets","namespace":"prod","name":"blah","apiVersion":"v1"},"responseStatus":{"metadata":{},"status":"Success","code":200},"requestReceivedTimestamp":"2021-11-01T17:33:36.892980Z","stageTimestamp":"2021-11-01T17:33:36.900224Z","annotations":{"authorization.k8s.io/decision":"allow","authorization.k8s.io/reason":""}}
 
 ```
-
+</details>
 
