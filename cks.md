@@ -31,7 +31,7 @@ kubectl -n webhook-demo create secret tls webhook-server-tls \
     --cert "/root/keys/webhook-server-tls.crt" \
     --key "/root/keys/webhook-server-tls.key"
 kubectl create -f /root/webhook-deployment.yaml
-
+kubectl create -f /root/webhook-service.yaml
     
 ```
 ``` yaml
@@ -70,6 +70,19 @@ spec:
       - name: webhook-tls-certs
         secret:
           secretName: webhook-server-tls        
+```
+``` yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-server
+  namespace: webhook-demo
+spec:
+  selector:
+    app: webhook-server
+  ports:
+    - port: 443
+      targetPort: webhook-api
 ```
 ## Pod Security Policy
 ## OPA
