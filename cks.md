@@ -1,16 +1,16 @@
 
 # Minimize Microservice Vulnerabilities
 ## test
-  apiVersion: v1
-  kind: Pod
-  metadata:
-    name: multi-pod
-  spec:
-    securityContext:
-      runAsUser: 1001
-    containers:
-    -  image: ubuntu
-       name: web
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: multi-pod
+    spec:
+      securityContext:
+        runAsUser: 1001
+      containers:
+      -  image: ubuntu
+         name: web
 
 
 
