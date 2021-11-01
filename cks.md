@@ -40,57 +40,6 @@ kubectl create -f /root/webhook-deployment.yaml
 kubectl create -f /root/webhook-service.yaml
 
 kubectl create -f /root/webhook-configuration.yaml    #############
-    
-```
-``` yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: webhook-server
-  namespace: webhook-demo
-  labels:
-    app: webhook-server
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: webhook-server
-  template:
-    metadata:
-      labels:
-        app: webhook-server
-    spec:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1234
-      containers:
-      - name: server
-        image: stackrox/admission-controller-webhook-demo:latest
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8443
-          name: webhook-api
-        volumeMounts:
-        - name: webhook-tls-certs
-          mountPath: /run/secrets/tls
-          readOnly: true
-      volumes:
-      - name: webhook-tls-certs
-        secret:
-          secretName: webhook-server-tls        
-```
-``` yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: webhook-server
-  namespace: webhook-demo
-spec:
-  selector:
-    app: webhook-server
-  ports:
-    - port: 443
-      targetPort: webhook-api
 ```
 ```yaml
 # /root/webhook-configuration.yaml                          ################
