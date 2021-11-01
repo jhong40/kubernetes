@@ -25,6 +25,11 @@ spec:
      command: ["sleep", "5000"]
 ```
 ## Validating and Mutating Admission Controllers
+webhook function
+- Denies all request for pod to run as root in container if no securityContext is provided.
+- If no value is set for runAsNonRoot, a default of true is applied, and the user ID defaults to 1234
+- Allow to run containers as root if runAsNonRoot set explicitly to false in the securityContext
+ 
 ```
 kubectl create ns webhook-demo
 kubectl -n webhook-demo create secret tls webhook-server-tls \
@@ -32,6 +37,8 @@ kubectl -n webhook-demo create secret tls webhook-server-tls \
     --key "/root/keys/webhook-server-tls.key"
 kubectl create -f /root/webhook-deployment.yaml
 kubectl create -f /root/webhook-service.yaml
+
+kubectl create -f /root/webhook-configuration.yaml
     
 ```
 ``` yaml
@@ -86,12 +93,15 @@ spec:
 ```
 ```yaml
 # /root/webhook-configuration.yaml
-apiVersion: admissionregistration.k8s.io/v1beta1
+#apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   name: demo-webhook
 webhooks:
   - name: webhook-server.webhook-demo.svc
+    sideEffects: NoneOnDryRun   ### v1
+    admissionReviewVersions: ["v1", "v1beta1"]  ### v1  
     clientConfig:
       service:
         name: webhook-server
@@ -104,6 +114,21 @@ webhooks:
         apiVersions: ["v1"]        
         resources: ["pods"]
 ```
+```
+None =>   securityContext:
+            runAsNonRoot: true
+            runAsUser: 1234
+           
+securityContext:     =>     securityContext:
+   runAsNonRoot: false        runAsNonRoot: false  
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 0
+root@controlplane:~# kubectl apply -f /root/pod-with-conflict.yaml
+Error from server: error when creating "/root/pod-with-conflict.yaml": admission webhook "webhook-server.webhook-demo.svc" denied the request: runAsNonRoot specified, but runAsUser set to 0 (the root user)
+```
+
 ## Pod Security Policy
 ## OPA
 ## Manage Kubernetes secrets
