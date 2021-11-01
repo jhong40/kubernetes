@@ -1,3 +1,13 @@
+
+# Minimize Microservice Vulnerabilities
+## Security Contexts
+## Validating and Mutating Admission Controllers
+## Pod Security Policy
+## OPA
+## Manage Kubernetes secrets
+## Using Runtime in kubernetes (gvisor, kata)
+## Implement Pod to Pod encryption by mTLS
+
 # Suply Chain Security
 
 ## image security
