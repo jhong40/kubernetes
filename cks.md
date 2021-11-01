@@ -1,18 +1,5 @@
 
 # Minimize Microservice Vulnerabilities
-## test
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: **multi-pod**
-    spec:
-      securityContext:
-        runAsUser: 1001
-      containers:
-      -  image: ubuntu
-         name: web
-
-
 
 ## Security Contexts
 kubectl exec ubuntu-sleeper -- whoami
