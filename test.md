@@ -1,7 +1,7 @@
 <details>
-  <summary>Click to expand!</summary>
+  <summary>Minimize Microservice Vulnerabilities</summary>
   
-  ## Heading
+# Minimize Microservice Vulnerabilities
   1. A numbered
   2. list
      * With some
