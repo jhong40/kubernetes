@@ -1,5 +1,5 @@
 <details>
-  <summary>Minimize Microservice Vulnerabilities</summary>
+  <summary><b>Minimize Microservice Vulnerabilities</b></summary>
   
 # Minimize Microservice Vulnerabilities
   1. A numbered
