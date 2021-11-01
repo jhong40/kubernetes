@@ -1,6 +1,33 @@
 
 # Minimize Microservice Vulnerabilities
 ## Security Contexts
+```
+kubectl exec ubuntu-sleeper -- whoami
+
+  securityContext:
+    runAsUser: 1010
+    
+    
+```
+``` yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-pod
+spec:
+  securityContext:
+    runAsUser: 1001
+  containers:
+  -  image: ubuntu
+     name: web
+     command: ["sleep", "5000"]
+     securityContext:
+      runAsUser: 1002
+
+  -  image: ubuntu
+     name: sidecar
+     command: ["sleep", "5000"]
+```
 ## Validating and Mutating Admission Controllers
 ## Pod Security Policy
 ## OPA
