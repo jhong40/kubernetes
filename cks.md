@@ -160,10 +160,10 @@ metadata:
     run: nginx
   name: audit-nginx
 spec:
-  securityContext:
-    seccompProfile:
-      type: Localhost
-      localhostProfile: profiles/audit.json
+  securityContext:                              ########
+    seccompProfile:                             ########
+      type: Localhost                           ########
+      localhostProfile: profiles/audit.json     ######## relative /var/lib/kubelet/seccomp
   containers:
   - image: nginx
     name: nginx  
