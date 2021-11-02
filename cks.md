@@ -140,6 +140,58 @@ curl -X PUT --data-binary @sample.rego http://localhost:8181/v1/policies/samplep
  
   
 ```  
+## OPA in Kubernetes
+```
+kube-mgmt: Replicate kube resource to OPA, Load Policy into OPA via kubernetes
+root@controlplane:~# cat untrusted-registry.rego 
+
+package kubernetes.admission
+
+deny[msg] {
+  input.request.kind.kind == "Pod"
+  image := input.request.object.spec.containers[_].image
+  not startswith(image, "hooli.com/")
+  msg := sprintf("image '%v' comes from untrusted registry", [image])
+}
+root@controlplane:~# cat unique-host.rego 
+package kubernetes.admission
+import data.kubernetes.ingresses
+
+deny[msg] {
+    some other_ns, other_ingress
+    input.request.kind.kind == "Ingress"
+    input.request.operation == "CREATE"
+    host := input.request.object.spec.rules[_].host
+    ingress := ingresses[other_ns][other_ingress]
+    other_ns != input.request.namespace
+    ingress.spec.rules[_].host == host
+    msg := sprintf("invalid ingress host %q (conflicts with %v/%v)", [host, other_ns, other_ingress])
+}
+
+root@controlplane:~# cat test.yaml 
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test
+spec:
+  containers:
+  - image: nginx
+    name: nginx-frontend
+  - image: hooli.com/mysql
+    name: mysql-backend  
+
+kubectl create configmap untrusted-registry --from-file=untrusted-registry.rego
+
+root@controlplane:~# kubectl apply -n dev -f /root/test.yaml
+Error from server (image 'nginx' comes from untrusted registry): error when creating "/root/test.yaml": admission webhook "validating-webhook.openpolicyagent.org" denied the request: image 'nginx' comes from untrusted registry
+  
+
+image: hooli.com/nginx  
+???
+  
+ 
+  
+```  
 ## Manage Kubernetes secrets
 ## Using Runtime in kubernetes (gvisor, kata)
 ## Implement Pod to Pod encryption by mTLS
