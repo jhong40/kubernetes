@@ -144,7 +144,6 @@ curl -X PUT --data-binary @sample.rego http://localhost:8181/v1/policies/samplep
 ```
 kube-mgmt: Replicate kube resource to OPA, Load Policy into OPA via kubernetes
 root@controlplane:~# cat untrusted-registry.rego 
-
 package kubernetes.admission
 
 deny[msg] {
@@ -152,20 +151,6 @@ deny[msg] {
   image := input.request.object.spec.containers[_].image
   not startswith(image, "hooli.com/")
   msg := sprintf("image '%v' comes from untrusted registry", [image])
-}
-root@controlplane:~# cat unique-host.rego 
-package kubernetes.admission
-import data.kubernetes.ingresses
-
-deny[msg] {
-    some other_ns, other_ingress
-    input.request.kind.kind == "Ingress"
-    input.request.operation == "CREATE"
-    host := input.request.object.spec.rules[_].host
-    ingress := ingresses[other_ns][other_ingress]
-    other_ns != input.request.namespace
-    ingress.spec.rules[_].host == host
-    msg := sprintf("invalid ingress host %q (conflicts with %v/%v)", [host, other_ns, other_ingress])
 }
 
 root@controlplane:~# cat test.yaml 
@@ -185,9 +170,69 @@ kubectl create configmap untrusted-registry --from-file=untrusted-registry.rego
 root@controlplane:~# kubectl apply -n dev -f /root/test.yaml
 Error from server (image 'nginx' comes from untrusted registry): error when creating "/root/test.yaml": admission webhook "validating-webhook.openpolicyagent.org" denied the request: image 'nginx' comes from untrusted registry
   
-
+# fix it with 
 image: hooli.com/nginx  
-???
+
+root@controlplane:~# cat unique-host.rego 
+package kubernetes.admission
+import data.kubernetes.ingresses
+
+deny[msg] {
+    some other_ns, other_ingress
+    input.request.kind.kind == "Ingress"
+    input.request.operation == "CREATE"
+    host := input.request.object.spec.rules[_].host
+    ingress := ingresses[other_ns][other_ingress]
+    other_ns != input.request.namespace
+    ingress.spec.rules[_].host == host
+    msg := sprintf("invalid ingress host %q (conflicts with %v/%v)", [host, other_ns, other_ingress])
+}  
+  
+kubectl create configmap unique-host --from-file=/root/unique-host.rego
+root@controlplane:~# cat ingress-test-1.yaml 
+apiVersion: networking.k8s.io/v1 
+kind: Ingress
+metadata:
+  name: prod
+  namespace: test-1
+spec:
+  rules:
+  - host: initech.com
+    http:
+      paths:
+      - path: /finance-1
+        pathType: Prefix
+        backend:
+          service:
+            name: banking
+            port: 
+              number: 443
+root@controlplane:~# kubectl apply -f /root/ingress-test-1.yaml
+ingress.networking.k8s.io/prod created
+  
+root@controlplane:~# cat ingress-test-2.yaml 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prod
+  namespace: test-2
+spec:
+  rules:
+  - host: initech.com
+    http:
+      paths:
+      - path: /finance-2
+        pathType: Prefix
+        backend:
+          service:
+            name: banking
+            port: 
+              number: 443
+root@controlplane:~# kubectl apply -f /root/ingress-test-2.yaml
+Error from server (invalid ingress host "initech.com" (conflicts with test-1/prod)): error when creating "/root/ingress-test-2.yaml": admission webhook "validating-webhook.openpolicyagent.org" denied the request: invalid ingress host "initech.com" (conflicts with test-1/prod)
+root@controlplane:~# 
+  
+  
   
  
   
