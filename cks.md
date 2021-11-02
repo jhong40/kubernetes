@@ -1,8 +1,19 @@
 <details>
-  <summary>Minimize Microservice Vulnerabilities</summary>
+  <summary>System Hardering</summary>
   
-## Security Contexts
-  
+## Limit Node Access
+```  
+root@controlplane:~# grep root /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+root@controlplane:~# id david
+uid=2323(david) gid=2323(david) groups=2323(david) 
+root@controlplane:~# passwd david
+Enter new UNIX password: 
+root@controlplane:~# userdel ray
+root@controlplane:~# groupdel devs
+usermod -s /usr/sbin/nologin himanshi
+useradd -d /opt/sam -s /bin/bash -G admin -u 2328 sam  
+```  
 </details>  
 
 
