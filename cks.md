@@ -89,7 +89,31 @@ wget/bionic-updates,bionic-security,now 1.19.4-1ubuntu2.2 amd64 [installed]
   
 ```  
 ## UFW FIREWALL
+```
+ufw status
+ufw status numbered  # show firewall status as numbered list of RULES
+ufw allow 1000:2000/tcp
+ufw reset  # reset to the default 
+root@node01:~# ufw allow 22
+Rules updated
+Rules updated (v6)
+root@node01:~# ufw status
+Status: inactive  
+
+root@node01:~# ufw allow from 135.22.65.0/24 to any port 9090 proto tcp
+Rules updated
+root@node01:~# ufw allow from 135.22.65.0/24 to any port 9091 proto tcp
+Rules updated
+root@node01:~# ufw enable
+Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
+Firewall is active and enabled on system startup
+
+systemctl status lighttpd  
+netstat -natulp | grep lighttpd
+ufw deny 80
   
+ufw disable  
+```  
 ## Seccomp
 
 ## AppArmor    
