@@ -271,6 +271,50 @@ spec:
   
 ```  
 ## Using Runtime in kubernetes (gvisor, kata)
+```
+root@controlplane:~# docker info | grep -i runtime   ################
+WARNING: No swap limit support
+ Runtimes: runc
+ Default Runtime: runc
+  
+root@controlplane:~# k get runtimeclasses   #####################3
+NAME              HANDLER        AGE
+gvisor            runsc          5m15s
+kata-containers   kata-runtime   5m14s
+  
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+    name: secure-runtime
+handler: runsc                      ##########################
+ 
+root@controlplane:~# k get runtimeclasses.node.k8s.io 
+NAME              HANDLER        AGE
+gvisor            runsc          7m23s
+kata-containers   kata-runtime   7m22s
+secure-runtime    runsc          4s    #########################
+  
+root@controlplane:~# cat 6.yml 
+apiVersion: v1
+kind: Pod
+metadata:
+    name: simple-webapp-1
+    labels:
+        name: simple-webapp
+spec:
+   runtimeClassName: secure-runtime          ############################
+   containers:
+     - name: simple-webapp
+       image: kodekloud/webapp-delayed-start
+       ports:
+        - containerPort: 8080
+  
+  
+  
+  
+  
+```  
+  
 ## Implement Pod to Pod encryption by mTLS
 </details>
 
