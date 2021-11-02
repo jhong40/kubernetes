@@ -3,16 +3,58 @@
   
 ## Limit Node Access
 ```  
-root@controlplane:~# grep root /etc/passwd
+# grep root /etc/passwd
 root:x:0:0:root:/root:/bin/bash
-root@controlplane:~# id david
+# id david
 uid=2323(david) gid=2323(david) groups=2323(david) 
-root@controlplane:~# passwd david
+# passwd david
 Enter new UNIX password: 
-root@controlplane:~# userdel ray
-root@controlplane:~# groupdel devs
-usermod -s /usr/sbin/nologin himanshi
-useradd -d /opt/sam -s /bin/bash -G admin -u 2328 sam  
+# userdel ray
+# groupdel devs
+# usermod -s /usr/sbin/nologin himanshi
+# useradd -d /opt/sam -s /bin/bash -G admin -u 2328 sam  
+```  
+## SSH Hardening and SUDO 
+```
+root@controlplane:~# ssh-copy-id -i ~/.ssh/id_rsa.pub jim@node01
+jim@node01's password: 
+Number of key(s) added: 1
+Now try logging into the machine, with:   "ssh 'jim@node01'"
+and check to make sure that only the key(s) you wanted were added.
+
+ssh jim@node01  
+  
+/etc/sudoer
+jim     ALL=(ALL:ALL) ALL
+jim ALL=(ALL) NOPASSWD:ALL    ############ no password
+%admin ALL=(ALL) ALL          ############ user in admin group can sudo  
+  
+## Create user rob, and make it admin group so that He can sudo   
+root@node01:/etc# adduser rob
+Adding user `rob' ...
+Adding new group `rob' (1002) ...
+Adding new user `rob' (1002) with group `rob' ...
+Creating home directory `/home/rob' ...
+Copying files from `/etc/skel' ...
+Enter new UNIX password: 
+Retype new UNIX password: 
+passwd: password updated successfully
+Changing the user information for rob
+Enter the new value, or press ENTER for the default
+        Full Name []: 
+        Room Number []: 
+        Work Phone []: 
+        Home Phone []: 
+        Other []: 
+Is the information correct? [Y/n] Y
+  
+usermod rob -G admin
+  
+### disable ssh root log, disable pass authentication
+#/etc/ssh/sshd_config, systemctl restart sshd
+PermitRootLogin no
+PasswordAuthentication no   
+  
 ```  
 </details>  
 
@@ -24,7 +66,7 @@ useradd -d /opt/sam -s /bin/bash -G admin -u 2328 sam
 ```
 kubectl exec ubuntu-sleeper -- whoami
 ```
-``` yaml
+jim ALL=(ALL) NOPASSWD:ALL``` yaml
 apiVersion: v1
 kind: Pod
 metadata:
