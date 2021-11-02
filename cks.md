@@ -85,11 +85,11 @@ Error from server: error when creating "/root/pod-with-conflict.yaml": admission
 ```
 ps -ef | grep api | grep able  # check enable-admission-plugins or disable-admission-plugins
 kube-apiserver.yaml
-    - --enable-admission-plugins=NodeRestriction,PodSecurityPolicy
+    - --enable-admission-plugins=NodeRestriction,PodSecurityPolicy                 #############
 
 root@controlplane:~# cat psp.yaml 
 apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
+kind: PodSecurityPolicy     #################
 metadata:
   name: example-psp
 spec:
