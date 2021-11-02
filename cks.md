@@ -227,6 +227,7 @@ spec:
         -
             image: 'nginx:alpine'
 ```
+```  
 http://vhost/allowed/  
 http:/vhost/restricted/  ## denied
   
