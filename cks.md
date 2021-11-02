@@ -115,7 +115,60 @@ ufw deny 80
 ufw disable  
 ```  
 ## Seccomp
+```
+strace -c ls /root
 
+docker run --name tracee --rm --privileged -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro -v /tmp/tracee:/tmp/tracee -it aquasec/tracee:0.4.0 --trace container=new
+
+1471.405184    hello            0      pause            1      /14065   1      /14065   0                sched_process_exit   
+
+root@controlplane:~# head -20 custom-profile.json 
+{
+    "defaultAction": "SCMP_ACT_ERRNO",  # need to create white list
+    "architectures": [
+        "SCMP_ARCH_X86_64",
+        "SCMP_ARCH_X86",
+        "SCMP_ARCH_X32"
+    ],
+    "syscalls": [
+        {
+            "names": [
+                "accept4",
+                "epoll_wait",
+                "pselect6",
+                "futex",
+                "madvise",
+  
+ 
+root@controlplane:~# head relaxed-profile.json 
+{
+    "defaultAction": "SCMP_ACT_ALLOW",  # need to create black list 
+    "architectures": [  
+  
+oot@controlplane:/var/lib/kubelet/seccomp# cd profiles/
+root@controlplane:/var/lib/kubelet/seccomp/profiles# ls
+audit.json  custom-profile.json  relaxed-profile.json  violation.json
+root@controlplane:/var/lib/kubelet/seccomp/profiles#   
+
+```  
+```yaml
+  
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: audit-nginx
+spec:
+  securityContext:
+    seccompProfile:
+      type: Localhost
+      localhostProfile: profiles/audit.json
+  containers:
+  - image: nginx
+    name: nginx  
+  
+```  
 ## AppArmor    
 </details>  
 
