@@ -211,7 +211,7 @@ profile restricted-nginx flags=(attach_disconnected,mediate_deleted) {
   deny /usr/share/nginx/html/restricted/* rw,      ############ deny restricted folder
   
 apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx-updated   ######## load above profile
-
+```
 ```yaml
 apiVersion: v1
 kind: Pod
