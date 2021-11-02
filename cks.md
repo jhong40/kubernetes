@@ -88,7 +88,21 @@ root@controlplane:/etc/modprobe.d# apt list --installed | grep wget
 wget/bionic-updates,bionic-security,now 1.19.4-1ubuntu2.2 amd64 [installed]  
   
 ```  
+## UFW FIREWALL
+  
+## Seccomp
+
+## AppArmor    
 </details>  
+
+
+
+
+
+
+
+
+
 
 
 <details>
