@@ -220,8 +220,8 @@ metadata:
     labels:
         run: nginx
     name: nginx
-    annotations:
-        container.apparmor.security.beta.kubernetes.io/nginx: localhost/restricted-nginx
+    annotations:                                                                             ########
+        container.apparmor.security.beta.kubernetes.io/nginx: localhost/restricted-nginx     ########
 spec:
     containers:
         -
