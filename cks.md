@@ -1,4 +1,12 @@
 <details>
+  <summary>Cluster Setup and Hardening</summary>
+  
+## Run CIS Benchmark Assessment Tool on Ubuntu
+  
+</details>  
+
+
+<details>
   <summary>System Hardering</summary>
   
 ## Limit Node Access
