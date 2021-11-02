@@ -170,6 +170,67 @@ spec:
   
 ```  
 ## AppArmor    
+```  
+root@controlplane:/# aa-status
+apparmor module is loaded.
+56 profiles are loaded.
+19 profiles are in enforce mode.
+   /sbin/dhclient
+   /usr/bin/lxc-start
+
+root@controlplane:/# kubectl describe pod
+Name:         nginx
+Namespace:    default
+Priority:     0
+Node:         controlplane/192.168.121.28
+Start Time:   Tue, 02 Nov 2021 20:24:08 +0000
+Labels:       run=nginx
+Annotations:  container.apparmor.security.beta.kubernetes.io/nginx: localhost/custom-nginx   ##############3
+Status:       Pending
+Reason:       AppArmor
+Message:      Cannot enforce AppArmor: profile "custom-nginx" is not loaded    ###############
+
+root@controlplane:/etc/apparmor.d# cat usr.sbin.nginx
+#include <tunables/global>
+
+profile custom-nginx flags=(attach_disconnected,mediate_deleted) {    ################
+  #include <abstractions/base>
+
+  network inet tcp,
+  network inet udp,
+  network inet icmp,
+
+  deny network raw,
+  
+apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx   ######## load profile, pod blocked ==> running
+ 
+cat /etc/apparmor.d/usr.sbin.nginx-updated
+profile restricted-nginx flags=(attach_disconnected,mediate_deleted) {
+...
+  deny /bin/** wl,
+  deny /usr/share/nginx/html/restricted/* rw,      ############ deny restricted folder
+  
+apparmor_parser -q /etc/apparmor.d/usr.sbin.nginx-updated   ######## load above profile
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    creationTimestamp: null
+    labels:
+        run: nginx
+    name: nginx
+    annotations:
+        container.apparmor.security.beta.kubernetes.io/nginx: localhost/restricted-nginx
+spec:
+    containers:
+        -
+            image: 'nginx:alpine'
+```
+http://vhost/allowed/  
+http:/vhost/restricted/  ## denied
+  
+```  
 </details>  
 
 
