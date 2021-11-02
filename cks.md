@@ -130,13 +130,13 @@ allow {
  input.user == "Kedar"
  }
   
-./opa test example.rego
+./opa test example.rego                   ##################
 1 error occurred during loading: example.rego:3: rego_parse_error: illegal default rule (value cannot contain var)
         default allow = 
         ^
 
 # load the policy file after fix the: default allow = false
-curl -X PUT --data-binary @sample.rego http://localhost:8181/v1/policies/samplepolicy
+curl -X PUT --data-binary @sample.rego http://localhost:8181/v1/policies/samplepolicy    ###################
  
   
 ```  
