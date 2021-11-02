@@ -56,6 +56,38 @@ PermitRootLogin no
 PasswordAuthentication no   
   
 ```  
+## IDENTIFY OPEN PORTS, REMOVE PACKAGES SERVICES  
+```
+apt list --installed
+apt list --installed | grep python2.7
+
+systemctl list-units -t service  # list only active service
+systemctl list-units --all  
+lsmod
+  
+root@controlplane:/etc/systemd/system# systemctl stop nginx
+root@controlplane:/etc/systemd/system# systemctl status nginx
+● nginx.service - A high performance web server and a reverse proxy server
+   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+rm /lib/systemd/system/nginx.service
+  
+/etc/modprobe.d/blacklist.conf
+#blacklist evbug
+blacklist evbug  
+
+apt remove nginx -y
+
+# netstat -tulpn | grep 9090
+tcp        0      0 0.0.0.0:9090            0.0.0.0:*               LISTEN      18508/apache2  
+systemctl stop apache2
+  
+root@controlplane:/etc/modprobe.d# apt list --installed | grep wget
+wget/now 1.18-5+deb9u3 amd64 [installed,upgradable to: 1.19.4-1ubuntu2.2]  
+root@controlplane:/etc/modprobe.d# apt install wget -y   # update to the latest
+root@controlplane:/etc/modprobe.d# apt list --installed | grep wget
+wget/bionic-updates,bionic-security,now 1.19.4-1ubuntu2.2 amd64 [installed]  
+  
+```  
 </details>  
 
 
