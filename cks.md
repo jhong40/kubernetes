@@ -2,7 +2,11 @@
   <summary>Cluster Setup and Hardening</summary>
   
 ## Run CIS Benchmark Assessment Tool on Ubuntu
+  Center for Internet Security
+```
+sh ./Assessor-CLI.sh -i -rd /var/www/html/ -nts -rp index
   
+```  
 ## Kube bench
 ## Service Account
 ## View Certificate
