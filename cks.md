@@ -4,7 +4,7 @@
 ## Run CIS Benchmark Assessment Tool on Ubuntu
   Center for Internet Security
 ```
-sh ./Assessor-CLI.sh -i -rd /var/www/html/ -nts -rp index
+sh ./Assessor-CLI.sh -i -rd /var/www/html/ -nts -rp index   # interactive, report dir, no time stamp, report prefix
   
 ```  
 ## Kube bench
