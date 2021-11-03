@@ -4,12 +4,30 @@
 ## Run CIS Benchmark Assessment Tool on Ubuntu
   Center for Internet Security
 ```
-sh ./Assessor-CLI.sh -i -rd /var/www/html/ -nts -rp index   # interactive, report dir, no time stamp, report prefix
-  
+sh ./Assessor-CLI.sh -i -rd /var/www/html/ -nts -rp index   # interactive, report dir, no time stamp, report prefix  
 ```  
 ## Kube bench
+```
+curl -L https://github.com/aquasecurity/kube-bench/releases/download/v0.4.0/kube-bench_0.4.0_linux_amd64.tar.gz -o kube-bench_0.4.0_linux_amd64.tar.gz
+tar -xvf kube-bench_0.4.0_linux_amd64.tar.gz
+
+ ./kube-bench --config-dir `pwd`/cfg --config `pwd`/cfg/config.yaml 
+
+  /etc/kubernetes/manifests/kube-controller-manager.yaml
+    - --terminated-pod-gc-threshold=10
+    - --feature-gates=RotateKubeletServerCertificate=true
+  
+ /etc/kubernetes/manifests/kube-scheduler.yaml 
+    --profiling=false  
+  
+./kube-bench --config-dir `pwd`/cfg --config `pwd`/cfg/config.yaml  #### run it again to check fixed  
+```  
 ## Service Account
-## View Certificate
+## View Certificate ./kube-bench --config-dir `pwd`/cfg --config `pwd`/cfg/config.yaml 
+
+
+    - --feature-gates=RotateKubeletServerCertificate=true
+  
 ## KubeConfig
 ## RBAC
 ## Cluster Role and Role Bindins
