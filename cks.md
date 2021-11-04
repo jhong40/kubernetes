@@ -121,6 +121,34 @@ docker logs 03a
 2021-11-04 01:24:53.703404 I | embed: ready to serve client requests
 2021-11-04 01:24:53.703645 C | etcdmain: open /etc/kubernetes/pki/etcd/server-certificate.crt: no such file or directory    ################  
   
+## docker ps -a | grep api, docker logs xxx
+root@controlplane:~# docker ps -a | grep kube-apiserver
+8af74bd23540        ca9843d3b545           "kube-apiserver --ad…"   39 seconds ago      Exited (1) 17 seconds ago                          k8s_kube-apiserver_kube-apiserver-controlplane_kube-system_f320fbaff7813586592d245912262076_4
+c9dc4df82f9d        k8s.gcr.io/pause:3.2   "/pause"                 3 minutes ago       Up 3 minutes                                       k8s_POD_kube-apiserve-controlplane_kube-system_f320fbaff7813586592d245912262076_1
+  
+  
+root@controlplane:~# docker logs 8af74bd23540  --tail=2
+W0520 01:57:23.333002       1 clientconn.go:1223] grpc: addrConn.createTransport failed to connect to {https://127.0.0.1:2379  <nil> 0 <nil>}. Err :connection error: desc = "transport: authentication handshake failed: x509: certificate signed by unknown authority". Reconnecting...
+Error: context deadline exceeded
+root@controlplane:~#   
+  
+grep crt kube-apiserver.yaml 
+    - --client-ca-file=/etc/kubernetes/pki/ca.crt
+    - --etcd-cafile=/etc/kubernetes/pki/ca.crt      ##################### => /etc/kubernetes/pki/etcd/ca.crt fix
+    - --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
+    - --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt
+    - --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt
+    - --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt
+    - --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
+root@controlplane:/etc/kubernetes/manifests# !70
+grep crt etcd.yaml 
+    - --cert-file=/etc/kubernetes/pki/etcd/server.crt
+    - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+    - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt      ########################
+  
+  
+  
 ```  
 ## KubeConfig
 ## RBAC
