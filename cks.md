@@ -146,11 +146,25 @@ grep crt etcd.yaml
     - --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
     - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
     - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt      ########################
-  
-  
-  
+   
 ```  
 ## KubeConfig
+```
+~/.kube/config
+kubectl config view  #count clusters, count users,contexts
+kubectl config view --kubeconfig my-kube-config  #  
+
+k --kubeconfig=my-kube-config config use-context research
+Switched to context "research".
+k --kubeconfig=my-kube-config config current-context
+research
+  
+```
+
+  
+  
+  
+  
 ## RBAC
 ## Cluster Role and Role Bindins
 ## Kubelet Security
