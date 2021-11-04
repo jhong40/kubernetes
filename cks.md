@@ -21,12 +21,29 @@ tar -xvf kube-bench_0.4.0_linux_amd64.tar.gz
     --profiling=false  
   
 ./kube-bench --config-dir `pwd`/cfg --config `pwd`/cfg/config.yaml  #### run it again to check fixed  
+  
 ```  
 ## Service Account
-## View Certificate ./kube-bench --config-dir `pwd`/cfg --config `pwd`/cfg/config.yaml 
-
-
-    - --feature-gates=RotateKubeletServerCertificate=true
+  
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  creationTimestamp: "2021-11-03T23:53:12Z"
+  name: default
+  namespace: default
+  resourceVersion: "412"
+  uid: 206064b9-1f41-49a1-b232-35b8d9cd4e3a
+secrets:
+- name: default-token-c47kx
+  
+kubectl create sa dashboard-sa
+  
+      serviceAccountName: dashboard-sa    
+```  
+  
+  
+## View Certificate 
   
 ## KubeConfig
 ## RBAC
