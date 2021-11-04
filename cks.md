@@ -557,7 +557,11 @@ spec:
       protocol: UDP
     - port: 53
       protocol: TCP
-root@controlplane:~# 
+  
+kubectl get svc -n kube-system 
+NAME       TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)                  AGE
+kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   93m
+ 
   
 ```  
 ## Ingress 1
