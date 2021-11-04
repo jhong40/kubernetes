@@ -293,14 +293,15 @@ rotateCertificates: true
 apiVersion: kubelet.config.k8s.io/v1beta1
 authentication:
   anonymous:
-    enabled: true
+    enabled: true                          ####################
   webhook:
     cacheTTL: 0s
     enabled: true
   x509:
     clientCAFile: /etc/kubernetes/pki/ca.crt
 authorization:
-  mode: AlwaysAllow 
+  mode: AlwaysAllow                        #####################
+  
 curl -sk https://localhost:10250/pods   # can see pod
   
 authorization:
@@ -318,7 +319,7 @@ curl -sk http://localhost:10255/metrics   # still work
   
 syncFrequency: 0s
 volumeStatsAggPeriod: 0s
-readOnlyPort: 10255  => 0
+readOnlyPort: 10255     #########################  => 0
 curl -sk http://localhost:10255/metrics   # show nothing  
 ```  
   
