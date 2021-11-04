@@ -501,6 +501,65 @@ systemctl restart kubelet
 k uncordon node01
 ```  
 ## Network Security Policy
+```
+k get netpol
+NAME             POD-SELECTOR   AGE
+payroll-policy   name=payroll   34s
+  
+root@controlplane:~# k describe networkpolicies.networking.k8s.io 
+Name:         payroll-policy
+Namespace:    default
+Created on:   2021-11-04 21:29:49 +0000 UTC
+Labels:       <none>
+Annotations:  <none>
+Spec:
+  PodSelector:     name=payroll  #####
+  Allowing ingress traffic:
+    To Port: 8080/TCP
+    From:
+      PodSelector: name=internal
+  Not affecting egress traffic
+  Policy Types: Ingress  
+  
+ 
+ ```
+ ```yaml
+ 
+ apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: internal-policy
+spec:
+  podSelector:
+    matchLabels:
+      name: internal
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          name: mysql
+    ports:
+    - protocol: TCP
+      port: 3306
+
+  - to:
+    - podSelector:
+        matchLabels:
+          name: payroll
+    ports:
+    - protocol: TCP
+      port: 8080
+
+  - ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+root@controlplane:~# 
+  
+```  
 ## Ingress 1
 ## Ingress 2 
   
