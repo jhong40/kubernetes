@@ -322,9 +322,53 @@ volumeStatsAggPeriod: 0s
 readOnlyPort: 10255     #########################  => 0
 curl -sk http://localhost:10255/metrics   # show nothing  
 ```  
+##  KUBECTL PROXY & PORT FORWARD  
+```  
+kubectl proxy - Opens proxy port to API server
+kubectl port-forward - Opens port to target deployment pods  
+  
+root@controlplane:~# curl -k https://localhost:6443
+  "message": "forbidden: User \"system:anonymous\" cannot get path \"/\"",
+
+kubectl proxy                                         ##########
+Starting to serve on 127.0.0.1:8001
+curl http://localhost:8001/
+curl 127.0.0.1:8001/version
+  
+kubectl proxy --port 8002 &
+curl 127.0.0.1:8002
+  
+  
+kubectl port-forward pods/{POD_NAME} 8005:80 &
+kubectl port-forward deployment/{DEPLOYMENT_NAME} 8005:80 &
+kubectl port-forward service/{SERVICE_NAME} 8005:80 &
+kubectl port-forward replicaset/{REPLICASET_NAME} 8005:80 &
+
+k port-forward deployment/nginx 8005:80 &   ########################
+[3] 18975
+root@controlplane:~# Forwarding from 127.0.0.1:8005 -> 80
+curl localhost:8005
+Handling connection for 8005
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>  
   
 
-##  KUBECTL PROXY & PORT FORWARD  
+  
+  
+  
+```
+  
+  
+  
+  
+  
+  
+  
+  
+  
 ## Secure kubernetes Dashboard
 ## Verify Platform binary
 ## Cluster Upgrade
