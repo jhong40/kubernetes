@@ -169,6 +169,18 @@ error: unable to read client-cert /etc/kubernetes/pki/users/dev-user/developer-u
 
 devloper-user.crt => dev-user.crt  # fix  
   
+  
+k create role mydeployrole99 --verb=* --resource=deployments
+role.rbac.authorization.k8s.io/mydeployrole99 created
+root@controlplane:~# k describe role mydeployrole99 
+Name:         mydeployrole99
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources         Non-Resource URLs  Resource Names  Verbs
+  ---------         -----------------  --------------  -----
+  deployments.apps  []                 []              [*]    
+  
 ```  
 ## RBAC
 ```
@@ -263,17 +275,6 @@ kubectl auth can-i list storageclasses --as michelle
 Warning: resource 'storageclasses' is not namespace scoped in group 'storage.k8s.io'
 yes  
   
-  
-k create role mydeployrole99 --verb=* --resource=deployments
-role.rbac.authorization.k8s.io/mydeployrole99 created
-root@controlplane:~# k describe role mydeployrole99 
-Name:         mydeployrole99
-Labels:       <none>
-Annotations:  <none>
-PolicyRule:
-  Resources         Non-Resource URLs  Resource Names  Verbs
-  ---------         -----------------  --------------  -----
-  deployments.apps  []                 []              [*]  
   
 ```  
   
