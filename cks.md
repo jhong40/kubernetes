@@ -305,13 +305,13 @@ authorization:
 curl -sk https://localhost:10250/pods   # can see pod
   
 authorization:
-  mode: Webhoook   
+  mode: Webhoook                            #########
 curl -sk https://localhost:10250/pods
 Forbidden (user=system:anonymous, verb=get, resource=nodes, subresource=proxy)
  
 authentication:
   anonymous:
-    enabled: false   
+    enabled: false                           ########   
 curl -sk https://localhost:10250/pods
 Unauthorized  
   
