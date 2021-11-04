@@ -354,11 +354,7 @@ Handling connection for 8005
 <head>
 <title>Welcome to nginx!</title>
 <style>  
-  
-
-  
-  
-  
+ 
 ```
   
   
