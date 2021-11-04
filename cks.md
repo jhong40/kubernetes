@@ -470,12 +470,57 @@ shasum -a512 /opt/kubernetes.tar.gz       ####################
 sha512sum kubernetes.tar.gz     
 ```  
 ## Cluster Upgrade
+```
+kubectl get nodes   # check version 
+  
+# check which node can host workload  
+root@controlplane:~# k describe nodes controlplane | grep -i taint
+Taints:             <none>
+root@controlplane:~# k describe nodes node01 | grep -i taint
+Taints:             <none>
+  
+k get deploy   # check how many deployment
+
+##### controlplane  
+kubeadm upgrade plan
+k drain controlplane --ignore-daemonsets
+  
+apt install kubeadm=1.20.0-00 
+kubeadm version 
+kubeadm upgrade plan
+kubeadm upgrade apply v1.20.0
+apt install kubelet=1.20.0-00
+kubectl uncordon controlplane
+  
+#### node
+kubectl drain node01 --ignore-daemonsets (--force)
+apt update; apt install kubeadm=1.20.0-00
+kubeadm upgrade node
+apt install kubelet=1.20.0-00
+systemctl restart kubelet
+k uncordon node01
+```  
 ## Network Security Policy
 ## Ingress 1
 ## Ingress 2 
   
 </details>  
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 <details>
   <summary>System Hardering</summary>
