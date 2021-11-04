@@ -277,16 +277,52 @@ k create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin -
 kubectl auth can-i list storageclasses --as michelle
 Warning: resource 'storageclasses' is not namespace scoped in group 'storage.k8s.io'
 yes  
+```  
+
+## Kubelet Security
+```
+/usr/bin/kubelet --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml --network-plugin=cni --pod-infra-container-image=k8s.gcr.io/pause:3.2
   
+
+  grep rotateCertificates /var/lib/kubelet/config.yaml
+rotateCertificates: true
   
+  10250: full access
+  10255: read only access
+  
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: true
+  webhook:
+    cacheTTL: 0s
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/pki/ca.crt
+authorization:
+  mode: AlwaysAllow 
+curl -sk https://localhost:10250/pods   # can see pod
+  
+authorization:
+  mode: Webhoook   
+curl -sk https://localhost:10250/pods
+Forbidden (user=system:anonymous, verb=get, resource=nodes, subresource=proxy)
+ 
+authentication:
+  anonymous:
+    enabled: false   
+curl -sk https://localhost:10250/pods
+Unauthorized  
+  
+curl -sk http://localhost:10255/metrics   # still work
+  
+syncFrequency: 0s
+volumeStatsAggPeriod: 0s
+readOnlyPort: 10255  => 0
+curl -sk http://localhost:10255/metrics   # show nothing  
 ```  
   
   
-  
-  
-  
-  
-## Kubelet Security
 ## Secure kubernetes Dashboard
 ## Verify Platform binary
 ## Cluster Upgrade
