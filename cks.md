@@ -462,15 +462,13 @@ subjects:
   namespace: kubernetes-dashboard
 EOF  
   
-```
-  
-  
-  
-  
-  
-  
-  
+```  
 ## Verify Platform binary
+```
+wget -O /opt/kubernetes.tar.gz https://dl.k8s.io/v1.20.0/kubernetes.tar.gz
+shasum -a512 /opt/kubernetes.tar.gz       ####################
+sha512sum kubernetes.tar.gz     
+```  
 ## Cluster Upgrade
 ## Network Security Policy
 ## Ingress 1
