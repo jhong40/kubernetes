@@ -38,7 +38,7 @@ secrets:
 - name: default-token-c47kx
   
 kubectl create sa dashboard-sa
-  
+```  
 ```yaml
 #root@controlplane:/var/rbac# cat pod-reader-role.yaml 
 kind: Role
@@ -56,8 +56,7 @@ rules:
   - watch
   - list
   
-root@controlplane:/var/rbac# cat dashboard-sa-role-binding.yaml 
----
+#root@controlplane:/var/rbac# cat dashboard-sa-role-binding.yaml 
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
