@@ -240,13 +240,40 @@ csidrivers                                     storage.k8s.io/v1                
 csinodes                                       storage.k8s.io/v1                      false        CSINode
 storageclasses                    sc           storage.k8s.io/v1                      false        StorageClass
 volumeattachments                              storage.k8s.io/v1                      false        VolumeAttachment
+oot@controlplane:~# k api-resources | grep pers
+persistentvolumeclaims            pvc          v1                                     true         PersistentVolumeClaim
+persistentvolumes                 pv           v1                                     false        PersistentVolume  
   
-k create clusterrole storage-admin --verb=* --resource=storageclasses
+  
+k create clusterrole storage-admin --verb=* --resource=storageclasses --verb=* --resource=persistentvolumes
+clusterrole.rbac.authorization.k8s.io/storage-admin created
+root@controlplane:~# k describe clusterrole storage-admin 
+Name:         storage-admin
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources                      Non-Resource URLs  Resource Names  Verbs
+  ---------                      -----------------  --------------  -----
+  persistentvolumes              []                 []              [*]
+  storageclasses.storage.k8s.io  []                 []              [*]
+  
 k create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin --user=michelle  
   
 kubectl auth can-i list storageclasses --as michelle
 Warning: resource 'storageclasses' is not namespace scoped in group 'storage.k8s.io'
 yes  
+  
+  
+k create role mydeployrole99 --verb=* --resource=deployments
+role.rbac.authorization.k8s.io/mydeployrole99 created
+root@controlplane:~# k describe role mydeployrole99 
+Name:         mydeployrole99
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources         Non-Resource URLs  Resource Names  Verbs
+  ---------         -----------------  --------------  -----
+  deployments.apps  []                 []              [*]  
   
 ```  
   
