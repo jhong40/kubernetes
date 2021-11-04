@@ -222,17 +222,39 @@ kubectl create role foo --verb=get,list,watch --resource=replicasets.apps   ####
   - create
   
   k -n blue auth can-i create deployment --as dev-user
-  k -n blue create deployment blah --image=nginx
+  k -n blue create deployment blah --image=nginx  --as dev-user
    
-``` 
-
-  
-  
-  
-  
-  
-  
+```   
 ## Cluster Role and Role Bindins
+```
+kubectl get clusterroles --no-headers | wc -l   the same as  kubectl get clusterroles --no-headers -o json | jq '.items | length'
+kubectl get clusterrolebindings --no-headers | wc -l    the same as  kubectl get clusterrolebindings --no-headers -o json | jq '.items | length'
+kubectl describe clusterrole cluster-admin
+
+k create clusterrole mrole --verb=* --resource=nodes
+k create clusterrolebinding michelle-mrole --clusterrole=mrole --user=michelle
+  
+  
+root@controlplane:~# k api-resources | grep -i storage
+csidrivers                                     storage.k8s.io/v1                      false        CSIDriver
+csinodes                                       storage.k8s.io/v1                      false        CSINode
+storageclasses                    sc           storage.k8s.io/v1                      false        StorageClass
+volumeattachments                              storage.k8s.io/v1                      false        VolumeAttachment
+  
+k create clusterrole storage-admin --verb=* --resource=storageclasses
+k create clusterrolebinding michelle-storage-admin --clusterrole=storage-admin --user=michelle  
+  
+kubectl auth can-i list storageclasses --as michelle
+Warning: resource 'storageclasses' is not namespace scoped in group 'storage.k8s.io'
+yes  
+  
+```  
+  
+  
+  
+  
+  
+  
 ## Kubelet Security
 ## Secure kubernetes Dashboard
 ## Verify Platform binary
