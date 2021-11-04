@@ -77,7 +77,51 @@ roleRef:
   
   
 ## View Certificate 
+```  
+root@controlplane:~# k -n kube-system describe pod kube-apiserver-controlplane  | grep crt
+      --client-ca-file=/etc/kubernetes/pki/ca.crt
+      --etcd-cafile=/etc/kubernetes/pki/etcd/ca.crt
+      --etcd-certfile=/etc/kubernetes/pki/apiserver-etcd-client.crt
+      --kubelet-client-certificate=/etc/kubernetes/pki/apiserver-kubelet-client.crt
+      --proxy-client-cert-file=/etc/kubernetes/pki/front-proxy-client.crt
+      --requestheader-client-ca-file=/etc/kubernetes/pki/front-proxy-ca.crt
+      --tls-cert-file=/etc/kubernetes/pki/apiserver.crt
+root@controlplane:~# k -n kube-system describe pod kube-apiserver-controlplane  | grep key 
+      --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key
+      --kubelet-client-key=/etc/kubernetes/pki/apiserver-kubelet-client.key
+      --proxy-client-key-file=/etc/kubernetes/pki/front-proxy-client.key
+      --service-account-key-file=/etc/kubernetes/pki/sa.pub
+      --service-account-signing-key-file=/etc/kubernetes/pki/sa.key
+      --tls-private-key-file=/etc/kubernetes/pki/apiserver.key
   
+
+root@controlplane:~# k -n kube-system describe pod etcd-controlplane | grep crt           
+      --cert-file=/etc/kubernetes/pki/etcd/server.crt
+      --peer-cert-file=/etc/kubernetes/pki/etcd/peer.crt
+      --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+      --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
+root@controlplane:~# k -n kube-system describe pod etcd-controlplane | grep key
+      --key-file=/etc/kubernetes/pki/etcd/server.key
+      --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
+  
+openssl x509  -noout -text -in /etc/kubernetes/pki/apiserver.crt
+  
+root@controlplane:/etc/kubernetes/manifests# docker ps | grep api
+8499a1973635        ca9843d3b545           "kube-apiserver --ad…"   23 seconds ago      Up 21 seconds  k8s_kube-apiserver_kube-apiserver-controlplane_kube-system_438f60ae442d63c542063736081f2ce9_5
+  
+docker logs 8499
+W1104 01:23:51.568113       1 clientconn.go:1223] grpc: addrConn.createTransport failed to connect to {https://127.0.0.1:2379  <nil> 0 <nil>}. Err :connection error: desc = "transport: Error while dialing dial tcp 127.0.0.1:2379: connect: connection refused". Reconnecting...
+  
+ 
+root@controlplane:/etc/kubernetes/manifests# docker ps -a | grep etcd      ############### add -a if docker instance not found.
+03a283b32ddd        0369cf4303ff           "etcd --advertise-cl…"   About a minute ago   Up About a minute  k8s_etcd_etcd-controlplane_kube system_39d6dffeffbc33b9c948fe9f59ee7bbb_0
+ 
+docker logs 03a
+2021-11-04 01:24:53.703321 I | embed: ready to serve client requests
+2021-11-04 01:24:53.703404 I | embed: ready to serve client requests
+2021-11-04 01:24:53.703645 C | etcdmain: open /etc/kubernetes/pki/etcd/server-certificate.crt: no such file or directory    ################  
+  
+```  
 ## KubeConfig
 ## RBAC
 ## Cluster Role and Role Bindins
