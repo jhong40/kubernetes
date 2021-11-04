@@ -159,6 +159,17 @@ Switched to context "research".
 k --kubeconfig=my-kube-config config current-context
 research
   
+  
+- name: dev-user
+  user:
+    client-certificate: /etc/kubernetes/pki/users/dev-user/developer-user.crt
+    client-key: /etc/kubernetes/pki/users/dev-user/dev-user.key  
+ 
+  k get pods
+error: unable to read client-cert /etc/kubernetes/pki/users/dev-user/developer-user.crt for dev-user due to open /etc/kubernetes/pki/users/dev-user/developer-user.crt: no such file or directory
+
+devloper-user.crt => dev-user.crt  # fix  
+  
 ```
 
   
