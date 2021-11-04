@@ -159,7 +159,6 @@ Switched to context "research".
 k --kubeconfig=my-kube-config config current-context
 research
   
-  
 - name: dev-user
   user:
     client-certificate: /etc/kubernetes/pki/users/dev-user/developer-user.crt
@@ -170,13 +169,44 @@ error: unable to read client-cert /etc/kubernetes/pki/users/dev-user/developer-u
 
 devloper-user.crt => dev-user.crt  # fix  
   
+```  
+## RBAC
 ```
+ --authorization-mode=Node,RBAC
+  
+root@controlplane:~# k -n kube-system describe role kube-proxy
+Name:         kube-proxy
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources   Non-Resource URLs  Resource Names  Verbs
+  ---------   -----------------  --------------  -----
+  configmaps  []                 [kube-proxy]    [get]
+  
+root@controlplane:~# kubectl describe rolebinding kube-proxy -n kube-system
+Name:         kube-proxy
+Labels:       <none>
+Annotations:  <none>
+Role:
+  Kind:  Role
+  Name:  kube-proxy
+Subjects:
+  Kind   Name                                             Namespace
+  ----   ----                                             ---------
+  Group  system:bootstrappers:kubeadm:default-node-token  
+  
+?????
+  
+  
+  
+``` 
 
   
   
   
   
-## RBAC
+  
+  
 ## Cluster Role and Role Bindins
 ## Kubelet Security
 ## Secure kubernetes Dashboard
