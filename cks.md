@@ -170,16 +170,7 @@ error: unable to read client-cert /etc/kubernetes/pki/users/dev-user/developer-u
 devloper-user.crt => dev-user.crt  # fix  
   
   
-k create role mydeployrole99 --verb=* --resource=deployments
-role.rbac.authorization.k8s.io/mydeployrole99 created
-root@controlplane:~# k describe role mydeployrole99 
-Name:         mydeployrole99
-Labels:       <none>
-Annotations:  <none>
-PolicyRule:
-  Resources         Non-Resource URLs  Resource Names  Verbs
-  ---------         -----------------  --------------  -----
-  deployments.apps  []                 []              [*]    
+  
   
 ```  
 ## RBAC
@@ -236,6 +227,18 @@ kubectl create role foo --verb=get,list,watch --resource=replicasets.apps   ####
   k -n blue auth can-i create deployment --as dev-user
   k -n blue create deployment blah --image=nginx  --as dev-user
    
+  
+k create role mydeployrole99 --verb=* --resource=deployments
+role.rbac.authorization.k8s.io/mydeployrole99 created
+root@controlplane:~# k describe role mydeployrole99 
+Name:         mydeployrole99
+Labels:       <none>
+Annotations:  <none>
+PolicyRule:
+  Resources         Non-Resource URLs  Resource Names  Verbs
+  ---------         -----------------  --------------  -----
+  deployments.apps  []                 []              [*]    
+  
 ```   
 ## Cluster Role and Role Bindins
 ```
