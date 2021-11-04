@@ -195,10 +195,35 @@ Subjects:
   ----   ----                                             ---------
   Group  system:bootstrappers:kubeadm:default-node-token  
   
-?????
+kubectl create role developer --verb=list,create,delete --resource=pods
+kubectl create rolebinding dev-user-binding --role=developer --user=dev-user  
+k get pods --as dev-user
   
   
+kubectl edit role developer -n blue
+  rules:
+- apiGroups:
+  - ""
+  resourceNames:
+  - blue-app           ###### => dark-blue-app fix
+  resources:
+  - pods
+  verbs:
+  - get
+    
+kubectl create role foo --verb=get,list,watch --resource=replicasets.apps   ##### => deploments,apps  
+
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - deployments
+  verbs:
+  - create
   
+  k -n blue auth can-i create deployment --as dev-user
+  k -n blue create deployment blah --image=nginx
+   
 ``` 
 
   
