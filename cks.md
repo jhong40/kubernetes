@@ -356,16 +356,120 @@ Handling connection for 8005
 <style>  
  
 ```
-  
-  
-  
-  
-  
-  
-  
-  
+
   
 ## Secure kubernetes Dashboard
+
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml
+kubectl proxy --address=0.0.0.0 --disable-filter &
+https://8001-port-516697f26a37488c.labs.kodekloud.com/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login
+
+root@controlplane:~# k get sa -A | grep admin-user
+kubernetes-dashboard   admin-user  
+
+root@controlplane:~# k -n kubernetes-dashboard describe clusterrolebinding admin-user-binding 
+Name:         admin-user-binding
+Labels:       <none>
+Annotations:  <none>
+Role:
+  Kind:  ClusterRole
+  Name:  cluster-admin
+Subjects:
+  Kind            Name        Namespace
+  ----            ----        ---------
+  ServiceAccount  admin-user  kubernetes-dashboard  
+  
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
+eyJhbGciOiJSUzI1NiIsImtpZCI6InNxdHhYUmQtNXpXTy1sdWdMeGt2amt5d2RWQUFrMVJ3ZEJBaEpLZW8tQXMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3Nlcn....
+  
+
+#copy the above to login with token on the dashboard UI
+# admin-user is too powerful
+  
+https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles  
+  
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: readonly-user
+  namespace: kubernetes-dashboard
+EOF
+
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: readonly-user-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view                                                  ##########
+subjects:
+- kind: ServiceAccount
+  name: readonly-user
+  namespace: kubernetes-dashboard
+EOF
+  
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/readonly-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
+
+## readonly user can only read, let create dashboard-admin to only full access to kubernetes-dashboard ns
+
+ ?????????????????? 
+  
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard-admin
+  namespace: kubernetes-dashboard
+EOF
+
+
+# admin RoleBinding
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dashboard-admin-binding
+  namespace: kubernetes-dashboard
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- kind: ServiceAccount
+  name: dashboard-admin
+  namespace: kubernetes-dashboard
+EOF
+
+
+## list-namespace ClusterRoleBinding
+
+cat <<EOF | kubectl apply -f -
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: dashboard-admin-list-namespace-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: list-namespace
+subjects:
+- kind: ServiceAccount
+  name: dashboard-admin
+  namespace: kubernetes-dashboard
+EOF  
+  
+```
+  
+  
+  
+  
+  
+  
+  
 ## Verify Platform binary
 ## Cluster Upgrade
 ## Network Security Policy
