@@ -22,6 +22,8 @@
   S - replace the whole line
             
   ESC+v - visual mode
+  shift+v - visual mode select line
+  ctrol+v - visual mode select block
   move arrow to select
   > 
   <
