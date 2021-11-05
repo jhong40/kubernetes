@@ -1,5 +1,6 @@
 <details>
   <summary>vi</summary>
+  
 ## vi usage  
  ```
   gg - beging of F
