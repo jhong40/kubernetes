@@ -565,7 +565,50 @@ kube-dns   ClusterIP   10.96.0.10   <none>        53/UDP,53/TCP,9153/TCP   93m
   
 ```  
 ## Ingress 1
+```  
+k get deployment -A | grep -v kube-system
+k get ingress -A
+root@controlplane:~# k -n app-space describe ingress ingress-wear-watch 
+Name:             ingress-wear-watch
+Namespace:        app-space
+Address:          
+Default backend:  default-http-backend:80 (<error: endpoints "default-http-backend" not found>)
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *           
+              /wear    wear-service:8080 (10.244.0.4:8080)
+              /watch   video-service:8080 (10.244.0.7:8080)
+Annotations:  nginx.ingress.kubernetes.io/rewrite-target: /
+              nginx.ingress.kubernetes.io/ssl-redirect: false
+Events:       <none>
+  
+root@controlplane:~# cat 22.yml 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: pay-ingress 
+  namespace: critical-space 
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          service:
+            name: pay-service
+            port:
+              number: 8282
+        path: /pay
+        pathType: Prefix  
+  
+```  
 ## Ingress 2 
+```
+  
+```  
   
 </details>  
 
