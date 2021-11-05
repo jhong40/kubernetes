@@ -1,4 +1,28 @@
 <details>
+  <summary>vi</summary>
+ ```
+  gg - beging of F
+  G - end of F
+  H - beging of screen
+  L - end of screen
+  M - middle of screen
+  w - => word
+  b - <= word
+  
+  i - insert br
+  a - insert after
+  o - insert one line below
+  s - replace/insert            
+  
+  I - insert at the begining of l
+  A - insert at the end of l
+  O - insert one line above
+  S - replace the whole line
+            
+ ```
+</details>
+
+<details>
   <summary>Cluster Setup and Hardening</summary>
   
 ## Run CIS Benchmark Assessment Tool on Ubuntu
