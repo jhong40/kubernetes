@@ -1,5 +1,6 @@
 <details>
   <summary>vi</summary>
+## vi usage  
  ```
   gg - beging of F
   G - end of F
@@ -19,7 +20,13 @@
   O - insert one line above
   S - replace the whole line
             
+  ESC+v - visual mode
+  move arrow to select
+  > 
+  <
+            
  ```
+            
 </details>
 
 <details>
