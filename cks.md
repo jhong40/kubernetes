@@ -1,8 +1,14 @@
 <details>
   <summary>vi</summary>
   
-## vi usage  
+## tmux - vi usage  
  ```
+  tmux 
+  ctr-b %  - vertical split 
+  ctr-b "  - horizontal split
+  ctr-b => arrow 
+  ctr-b <= arrow
+  
   gg - beging of F
   G - end of F
   H - beging of screen
