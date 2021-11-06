@@ -1,5 +1,5 @@
 <details>
-  <summary>vi</summary>
+  <summary>tmux vi</summary>
   
 ## tmux - vi usage  
  ```
