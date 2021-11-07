@@ -45,8 +45,9 @@
 ## Note  
 
 ```
-k run busybox3 --rm  --image=busybox -it  --restart=Never --command --  echo "hello world"
-k run busybox3 --rm  --image=busybox -it  --restart=Never  --  echo "hello world"
+k run busybox3 --rm  --image=busybox -it --restart=Never --command --  echo "hello world"
+k run busybox3 --rm  --image=busybox -it --restart=Never --  echo "hello world"
+k run busybox3 --rm  --image=busybox -it --restart=Never -- /bin/sh -c 'echo hello world'  
 hello world
 pod "busybox3" deleted     
 ```    
