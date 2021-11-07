@@ -37,6 +37,19 @@
  ```
             
 </details>
+  
+<details>
+  <summary> Note </summary
+```
+k run busybox3 --rm  --image=busybox -it  --restart=Never --command --  echo "hello world"
+k run busybox3 --rm  --image=busybox -it  --restart=Never  --  echo "hello world"
+hello world
+pod "busybox3" deleted    
+    
+hello world   
+```    
+    
+</details>    
 
 <details>
   <summary>Cluster Setup and Hardening</summary>
