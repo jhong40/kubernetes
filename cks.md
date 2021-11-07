@@ -46,9 +46,7 @@
 k run busybox3 --rm  --image=busybox -it  --restart=Never --command --  echo "hello world"
 k run busybox3 --rm  --image=busybox -it  --restart=Never  --  echo "hello world"
 hello world
-pod "busybox3" deleted    
-    
-   
+pod "busybox3" deleted     
 ```    
     
 </details>    
