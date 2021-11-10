@@ -33,6 +33,9 @@
   move arrow to select
   > 
   <
+  
+  
+  k -n project-c13 describe pod | less -p Requests   # highlight Requests
             
  ```
             
