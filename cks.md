@@ -20,12 +20,14 @@
   i - insert br
   a - insert after
   o - insert one line below
-  s - replace/insert            
+  s - replace/insert           
+  c - followed by w,$ remove those and insert         
   
   I - insert at the begining of l
   A - insert at the end of l
   O - insert one line above
-  S - replace the whole line
+  S - replace the whole line and insert
+  C - delete the rest of line and insert
             
   ESC+v - visual mode
   shift+v - visual mode select line
