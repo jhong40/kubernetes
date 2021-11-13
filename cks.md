@@ -1457,7 +1457,7 @@ root@controlplane:/#
 ## ENSURE IMMUTABILITY OF CONTAINERS AT RUNTIME
 ```
     securityContext:
-      privileged: true               #need: not true    withtout: container can be priviliged
+      privileged: false              #need: not true    withtout: container can be priviliged
       readOnlyRootFilesystem: true   #need: true    without it: pod can write to root file system
       
 
