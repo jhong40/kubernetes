@@ -3,6 +3,8 @@
   
   ```
   sysdig proc.name=vi or proc.name=cat
+  sysdig -c spy_users
+  
   ```
   
 </details>
