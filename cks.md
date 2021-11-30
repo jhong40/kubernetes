@@ -2,6 +2,9 @@
   <summary>zeal</summary>
   
   ```
+  checkov -f pod.yml
+  
+  
   # /var/log/pods/...   # pod log
   
   sysdig proc.name=vi or proc.name=cat
