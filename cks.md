@@ -1,4 +1,13 @@
 <details>
+  <summary>zeal</summary>
+  
+  ```
+  sysdig proc.name=vi or proc.name=cat
+  ```
+  
+</details>
+
+<details>
   <summary>tmux vi</summary>
   
 ## tmux - vi usage  
