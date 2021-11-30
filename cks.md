@@ -2,6 +2,7 @@
   <summary>zeal</summary>
   
   ```
+  # /var/log/pods/...   # pod log
   sysdig proc.name=vi or proc.name=cat
   sysdig proc.name=cat and container.id!=host
   
