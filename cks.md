@@ -2,6 +2,8 @@
   <summary>zeal</summary>
   
   ```
+  capsh --print   # display the capability. if not installed, apt install libcap2-bin
+  
   checkov -f pod.yml
   
   
