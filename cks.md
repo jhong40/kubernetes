@@ -2,6 +2,23 @@
   <summary>zeal</summary>
   
   ```
+  kubernetes -> CRI -> crio -> OCI -> runc
+  (OCI - Open contaniner initiative)
+  
+  Hight level runtime: (pull image from regstry, unpack to continer root fs, generate OCI runtime json, launch OCI runtime: runsc) 
+  docker
+  contaninerd
+  cri-o
+  podman
+  
+  Low level runtime: (OCI)
+  runc   (run container process: need config.json, rootfs)
+  
+  
+  gVisor
+  dmesg (diagnosit message)
+  
+  
   capsh --print   # display the capability. if not installed, apt install libcap2-bin
   
   checkov -f pod.yml
