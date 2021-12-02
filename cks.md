@@ -91,6 +91,13 @@
 ## Note  
   
 ```
+ufw status
+ufw default allow outgoing
+ufw default deny incoming
+ufw allow from 172.16.238.5 to any port 22 proto tcp   # any means any ip addresss
+ufw enable
+
+  
 # strace / aquaSec Tracee - detect syscall
 strace touch /tmp/err.log
 pidof vi
