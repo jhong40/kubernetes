@@ -1184,7 +1184,7 @@ metadata:
 spec:
   containers:
   - image: nginx
-    name: nginx-frontend
+    name: nginx-frontend                     #### missing hooli.com/
   - image: hooli.com/mysql
     name: mysql-backend  
 
