@@ -111,7 +111,18 @@ docker run -it --rm docker/whalesay /bin/sh    # will use the default.json from 
   grep -i seccomp /proc/1/status
   Seccomp:        2   # 0-disable, 1-strict, 2-filter
 docker run -it --rm --security-opt seccomp=/root/custom.json docker/whalesay /bin/sh  # use custom json
-docker run -it --rm --security-opt seccomp=unconfined docker/whalesay /bin/sh  # still cannot change sys time
+docker run -it --rm --security-opt seccomp=unconfined docker/whalesay /bin/sh  # still cannot change sys time bcause of linux capabilites
+  
+# kernel >2.2 introduce capabalities
+$ getcap /usr/bin/ping
+/usr/bin/ping = cap_net_raw+ep
+
+ps -ef | grep /usr/sbin/sshd
+root         659       1  0 17:33 ?        00:00:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+getpcaps 659
+
+# with default, docker started with 14 capabilities
+  
   
   
 ```
