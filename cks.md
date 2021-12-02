@@ -89,7 +89,32 @@
   <summary>Note</summary>
   
 ## Note  
-
+  
+```
+# strace / aquaSec Tracee - detect syscall
+strace touch /tmp/err.log
+pidof vi
+strace -p vipid
+strace -c touch /tmp/err.log   # sumary of syscall
+  
+# the following doesn't work somehow  
+docker run --name tracee --rm --privileged -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro -v /tmp/tracee:/tmp/tracee -it aquasec/tracee:0.4.0 --trace comm=ls
+docker run --name tracee --rm --privileged -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro -v /tmp/tracee:/tmp/tracee -it aquasec/tracee:0.4.0 --trace pid=new
+docker run --name tracee --rm --privileged -v /lib/modules/:/lib/modules/:ro -v /usr/src:/usr/src:ro -v /tmp/tracee:/tmp/tracee -it aquasec/tracee:0.4.0 --trace container=new  
+# check seccomp enable
+$ grep -i seccomp /boot/config-$(uname -r)
+CONFIG_HAVE_ARCH_SECCOMP_FILTER=y
+CONFIG_SECCOMP_FILTER=y
+CONFIG_SECCOMP=y     ## seccomp is supported by the kernel
+  
+docker run -it --rm docker/whalesay /bin/sh    # will use the default.json from docker
+  grep -i seccomp /proc/1/status
+  Seccomp:        2   # 0-disable, 1-strict, 2-filter
+docker run -it --rm --security-opt seccomp=/root/custom.json docker/whalesay /bin/sh  # use custom json
+docker run -it --rm --security-opt seccomp=unconfined docker/whalesay /bin/sh  # still cannot change sys time
+  
+  
+```
 ```
 k run busybox3 --rm  --image=busybox -it --restart=Never --command --  echo "hello world"
 k run busybox3 --rm  --image=busybox -it --restart=Never --  echo "hello world"
