@@ -44,6 +44,9 @@ kubectl delete pods <pod> --grace-period=0 --force
   cat log.txt | awk '{print $4 $5 $6}'
   cat log.txt | awk '{print $4 " " $5 " " $6}
   
+systemctl enable falco
+systemctl start falco
+journalctl -fu falco
   
   ```
   
