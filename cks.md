@@ -37,6 +37,14 @@ kubectl delete pods <pod> --grace-period=0 --force
   sysdig -h     # help
   sysdig -l     # list field
   csysdig
+  
+  output: demo %evt.time %user.uid %proc.name
+  timeout 25s falcon | grep demo
+  
+  cat log.txt | awk '{print $4 $5 $6}'
+  cat log.txt | awk '{print $4 " " $5 " " $6}
+  
+  
   ```
   
 </details>
