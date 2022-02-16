@@ -47,6 +47,8 @@ kubectl delete pods <pod> --grace-period=0 --force
 systemctl enable falco
 systemctl start falco
 journalctl -fu falco
+falco  # manual run
+  
   
   ```
   
