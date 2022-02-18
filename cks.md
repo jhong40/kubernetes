@@ -1,4 +1,14 @@
 kubectl delete pods <pod> --grace-period=0 --force
+watch crictl ps
+/var/log/pods
+/var/log/containers
+/var/log/syslog   # kubelet log
+journalctl -u kubelet
+
+crictl ps  # docker ps
+crictl logs  # docker logs 
+
+ 
 
 <details>
   <summary>zeal</summary>
