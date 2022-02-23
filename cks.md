@@ -1,6 +1,4 @@
 ```
-## copy/paste vim: set paster to avoid yaml misformat
-
 kubectl delete pods <pod> --grace-period=0 --force
 watch crictl ps
 /var/log/pods
@@ -74,14 +72,20 @@ falco  # manual run
 <details>
   <summary>tmux vi</summary>
   
-## tmux - vi usage  
+## tmux   
  ```
   tmux 
   ctr-b %  - vertical split 
   ctr-b "  - horizontal split
   ctr-b => arrow 
   ctr-b <= arrow
-  
+               
+## vi usage
+
+  :set paste   #  to avoid yaml misformat               
+  :set all     # see all the setting
+  :help expandtab # help tabstop
+               
   gg - beging of F
   G - end of F
   H - beging of screen
