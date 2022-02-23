@@ -1,4 +1,6 @@
 ```
+## copy/paste vim: set paster to avoid yaml misformat
+
 kubectl delete pods <pod> --grace-period=0 --force
 watch crictl ps
 /var/log/pods
