@@ -106,9 +106,9 @@ falco  # manual run
   S - replace the whole line and insert
   C - delete the rest of line and insert
             
-  ESC+v - visual mode
-  shift+v - visual mode select line
-  ctrol+v - visual mode select block
+  v (lower v) - visual mode, 
+  shift+v (cap V) - visual mode select line
+  ctrol+v  - visual mode select block
   move arrow to select
   > 
   <
