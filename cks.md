@@ -12,6 +12,8 @@ crictl logs  # docker logs
 netstat -tulpan | grep 1234
 lsof -i :1234
 
+dpkg -S command    # find the package the own the command
+
 ```
  
 
