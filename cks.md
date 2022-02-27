@@ -119,6 +119,7 @@ set expandtab
 set tabstop=2
 set shiftwidth=2
        
+set all    # check all the setting       
 set list   # show space, tab, endofline$
 set paste  # copy web yaml to vi
 set ruler  # see the line,column number
