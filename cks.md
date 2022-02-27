@@ -115,9 +115,14 @@ falco  # manual run
   > 
   <
   
- set list   # show space, tab, endofline$
- set paste  # copy web yaml to vi
- set ruler  # see the line,column number
+set expandtab
+set tabstop=2
+set shiftwidth=2
+       
+set list   # show space, tab, endofline$
+set paste  # copy web yaml to vi
+set ruler  # see the line,column number
+set number  # number each line
        
   k -n project-c13 describe pod | less -p Requests   # highlight Requests
             
