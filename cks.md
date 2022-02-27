@@ -125,6 +125,10 @@ set paste  # copy web yaml to vi
 set ruler  # see the line,column number
 set number  # number each line
        
+:vsplit    # 
+:wincmd w  # move to the next window
+       
+       
   k -n project-c13 describe pod | less -p Requests   # highlight Requests
             
  ```
