@@ -14,6 +14,8 @@ lsof -i :1234
 
 dpkg -S command    # find the package the own the command
 
+k -n project-c13 describe pod | less -p Requests   # highlight Requests
+
 ```
  
 
@@ -71,16 +73,7 @@ falco  # manual run
   
 </details>
 
-<details>
-  <summary>tmux vi</summary>
-  
-```    
-  k -n project-c13 describe pod | less -p Requests   # highlight Requests
-            
- ```
-            
-</details>
-  
+
   
 <details>
   <summary>Note</summary>
