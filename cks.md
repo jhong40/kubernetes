@@ -13,9 +13,7 @@ netstat -tulpan | grep 1234
 lsof -i :1234
 
 dpkg -S command    # find the package the own the command
-
 k -n project-c13 describe pod | less -p Requests   # highlight Requests
-
 ```
  
 
