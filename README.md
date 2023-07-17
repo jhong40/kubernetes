@@ -37,6 +37,7 @@ spec:
       - echo "aaa";
         echo "bbb";
         echo "ccc";
+        sleep 3600
   restartPolicy: OnFailure
 ```
 
