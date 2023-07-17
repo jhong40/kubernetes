@@ -16,8 +16,10 @@ spec:
   containers:
   - name: command-demo-container
     image: debian
-    command: ["printenv"]
-    args: ["HOSTNAME", "KUBERNETES_PORT"]
+    # command: ["printenv"]
+    # args: ["HOSTNAME", "KUBERNETES_PORT"]
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo hello; sleep 10;done"]
 ```
 ```
 apiVersion: v1
