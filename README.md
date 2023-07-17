@@ -4,6 +4,40 @@
 - https://krew.sigs.k8s.io/docs/user-guide/setup/install/ 
 - https://artifacthub.io/packages/krew/krew-index/neat?modal=install
 
+### Command and Args
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: command-demo
+  labels:
+    purpose: demonstrate-command
+spec:
+  containers:
+  - name: command-demo-container
+    image: debian
+    command: ["printenv"]
+    args: ["HOSTNAME", "KUBERNETES_PORT"]
+```
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: command-demo
+  labels:
+    purpose: demonstrate-command
+spec:
+  containers:
+  - name: command-demo-container
+    image: debian
+    command: ["/bin/sh", "-c"]
+    args:
+      - echo "aaa";
+        echo "bbb";
+        echo "ccc";
+  restartPolicy: OnFailure
+```
+
 # 7 Security
 ```
 user/pass, user/token, cert, ldap(3rd party)
