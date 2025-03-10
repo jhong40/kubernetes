@@ -1,5 +1,6 @@
 - [katacoda](https://www.katacoda.com/learn)
 - [k8splayground](https://labs.play-with-k8s.com)
+- [killercode](https://killercoda.com/)
 
 - https://krew.sigs.k8s.io/docs/user-guide/setup/install/ 
 - https://artifacthub.io/packages/krew/krew-index/neat?modal=install
