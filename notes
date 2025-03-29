@@ -25,6 +25,10 @@ node2 - 172.16.110.113
 
 kubectl log pod1 --timestamps
 kubectl log --since=5s  # 1h
+kubectl explain pod.sepc  --recursive
+
+kubect diff me.yml    # compare the me.yaml with the kube resource deployed
+
 
 
 
