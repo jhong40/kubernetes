@@ -23,6 +23,9 @@ master - 172.16.110.73
 node1 - 172.16.110.75
 node2 - 172.16.110.113
 
+kubectl log pod1 --timestamps
+kubectl log --since=5s  # 1h
+
 
 
 kubectl run nginx --image=nginx  #create a deployment nginx 
