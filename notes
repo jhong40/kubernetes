@@ -29,6 +29,12 @@ kubectl explain pod.sepc  --recursive
 
 kubect diff me.yml    # compare the me.yaml with the kube resource deployed
 
+kubectl debug   # distroless images, crashed container, mini pod disruption
+kubectl mypod -it nginx-pod --image=busybox --target=nginx-container  # 
+  cd /prod
+  cd /1/root/etc/nginx   # cat nginx.conf
+
+
 
 
 
