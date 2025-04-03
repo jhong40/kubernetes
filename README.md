@@ -4,6 +4,7 @@
 
 - https://krew.sigs.k8s.io/docs/user-guide/setup/install/ 
 - https://artifacthub.io/packages/krew/krew-index/neat?modal=install
+- https://github.com/kodekloudhub/certified-kubernetes-administrator-course
 
 ### Command and Args
 ```
