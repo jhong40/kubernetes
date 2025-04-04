@@ -5,6 +5,7 @@
 - https://krew.sigs.k8s.io/docs/user-guide/setup/install/ 
 - https://artifacthub.io/packages/krew/krew-index/neat?modal=install
 - https://github.com/kodekloudhub/certified-kubernetes-administrator-course
+- https://www.cncf.io/wp-content/uploads/2020/08/CNCF-Presentation-Template-K8s-Deployment.pdf
 
 ### Command and Args
 ```
